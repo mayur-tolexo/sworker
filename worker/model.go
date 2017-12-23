@@ -10,7 +10,14 @@ type JobPool struct {
 	job         chan Job
 	wg          sync.WaitGroup
 	workDisplay bool
+	log         bool
 	workerPool  []*Worker
+}
+
+//errorLog model
+type errorLog struct {
+	logValue interface{}
+	logTime  time.Time
 }
 
 //Job model
@@ -24,10 +31,7 @@ type Handler func(value ...interface{}) error
 
 //Worker model
 type Worker struct {
-	workerID    int
-	jobPool     *JobPool
-	logPool     chan interface{}
-	handler     Handler
-	log         bool
-	workDisplay bool
+	workerID int
+	jobPool  *JobPool
+	handler  Handler
 }

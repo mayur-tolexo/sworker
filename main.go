@@ -19,8 +19,7 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(3)
-
+	jp := worker.NewJobPool(4)
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")

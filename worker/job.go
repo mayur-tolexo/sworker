@@ -8,6 +8,7 @@ import (
 func NewJobPool(bufferSize int) *JobPool {
 	return &JobPool{
 		job: make(chan Job, bufferSize),
+		log: true,
 	}
 }
 
@@ -34,16 +35,19 @@ func (jobPool *JobPool) SetWorkDisplay(wd bool) {
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now().Nanosecond()
+
 	for i := 1; i <= noOfWorker; i++ {
 		w := &Worker{
-			workerID:    i + sTime,
-			jobPool:     jobPool,
-			logPool:     logPool,
-			handler:     handler,
-			log:         true,
-			workDisplay: jobPool.workDisplay,
+			workerID: i + sTime,
+			jobPool:  jobPool,
+			handler:  handler,
 		}
 		jobPool.workerPool = append(jobPool.workerPool, w)
 		w.start()
 	}
+}
+
+//GetWorkers return the worker of the current jobpool
+func (jobPool *JobPool) GetWorkers() []*Worker {
+	return jobPool.workerPool
 }

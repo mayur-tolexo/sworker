@@ -2,35 +2,28 @@ package worker
 
 import (
 	"fmt"
-	"sync"
 	"time"
 )
 
-var (
-	logPool     chan interface{}
-	WG          sync.WaitGroup
-	workDisplay bool
-)
-
-const (
-	BUFFER_SIZE = 100
-)
-
-func init() {
-	logPool = make(chan interface{}, BUFFER_SIZE)
-}
-
 //startHandler : call handler of the current worker
 func (w *Worker) startHandler(job Job) {
+	defer w.jobPool.wg.Done()
+
 	sTime := time.Now()
-	if w.workDisplay {
-		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID, sTime.Hour(), sTime.Minute(), sTime.Second())
+	defer func(sTime time.Time) {
+		if rec := recover(); rec != nil {
+			w.log(errorLog{logValue: rec, logTime: sTime})
+		}
+	}(sTime)
+
+	if w.jobPool.workDisplay {
+		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID,
+			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	w.handler(job.Value...)
-	if w.workDisplay {
+	if w.jobPool.workDisplay {
 		fmt.Printf("Worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
 	}
-	w.jobPool.wg.Done()
 }
 
 //Start worker
@@ -40,4 +33,9 @@ func (w *Worker) start() {
 			w.startHandler(job)
 		}
 	}()
+}
+
+//log start logging
+func (w *Worker) log(log errorLog) {
+	fmt.Println("HERE", log.logValue)
 }
