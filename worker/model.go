@@ -18,7 +18,7 @@ type Job struct {
 }
 
 //Handler function
-type Handler func(value ...interface{}) bool
+type Handler func(value ...interface{}) error
 
 //Worker model
 type Worker struct {

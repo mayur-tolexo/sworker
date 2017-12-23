@@ -7,9 +7,9 @@ import (
 )
 
 //PrintAll : function which worker will call to execute
-func PrintAll(value ...interface{}) bool {
+func PrintAll(value ...interface{}) error {
 	fmt.Println(value)
-	return true
+	return nil
 }
 
 //main function
@@ -19,10 +19,10 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(2)
+	jp := worker.NewJobPool(3)
 
-	//50 worker created
-	worker.NewWorker(50, jp, handler)
+	//5 worker created
+	worker.NewWorker(5, jp, handler)
 
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
