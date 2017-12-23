@@ -20,7 +20,9 @@ func (w *Worker) startHandler(job Job) {
 		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID,
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
-	w.handler(job.Value...)
+	if err := w.handler(job.Value...); err != nil {
+		w.log(errorLog{logValue: err.Error(), logTime: sTime})
+	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("Worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
 	}
@@ -37,5 +39,5 @@ func (w *Worker) start() {
 
 //log start logging
 func (w *Worker) log(log errorLog) {
-	fmt.Println("HERE", log.logValue)
+	fmt.Println(log.logValue)
 }
