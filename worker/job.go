@@ -33,9 +33,10 @@ func (jobPool *JobPool) SetWorkDisplay(wd bool) {
 
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
+	sTime := time.Now().Nanosecond()
 	for i := 1; i <= noOfWorker; i++ {
 		w := &Worker{
-			workerID:    i,
+			workerID:    i + sTime,
 			jobPool:     jobPool,
 			logPool:     logPool,
 			handler:     handler,
