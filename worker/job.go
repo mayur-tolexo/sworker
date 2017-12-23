@@ -44,6 +44,6 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 			workDisplay: jobPool.workDisplay,
 		}
 		WorkerPool = append(WorkerPool, w)
-		w.Start()
+		w.start()
 	}
 }

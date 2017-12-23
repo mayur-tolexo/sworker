@@ -35,7 +35,7 @@ func (w *Worker) startHandler(job Job) {
 }
 
 //Start worker
-func (w *Worker) Start() {
+func (w *Worker) start() {
 	go func() {
 		for job := range w.jobPool.job {
 			w.startHandler(job)
