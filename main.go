@@ -6,13 +6,17 @@ import (
 	"github.com/mayur-tolexo/sworker/worker"
 )
 
+//PrintAll : function which worker will call to execute
+func PrintAll(value ...interface{}) bool {
+	fmt.Println(value)
+	return true
+}
+
+//main function
 func main() {
 
-	//handler created
-	handler := func(value ...interface{}) bool {
-		fmt.Println(value)
-		return true
-	}
+	//handler for the worker created
+	handler := PrintAll
 
 	//jobpool created
 	jp := worker.NewJobPool(2)
