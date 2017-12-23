@@ -3,11 +3,14 @@ package worker
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 var (
-	logPool chan interface{}
-	WG      sync.WaitGroup
+	logPool     chan interface{}
+	WG          sync.WaitGroup
+	workDisplay bool
+	WorkerPool  []*Worker
 )
 
 const (
@@ -19,35 +22,46 @@ func init() {
 }
 
 //NewWorker new worker creation
-func NewWorker(noOfWorker int, jobPool JobPool, handler Handler) {
+func NewWorker(noOfWorker int, jobPool *JobPool, handler Handler) {
 	for i := 1; i <= noOfWorker; i++ {
 		w := &Worker{
 			workerID:    i,
 			jobPool:     jobPool,
 			logPool:     logPool,
 			handler:     handler,
-			sync:        true,
 			log:         true,
-			workDisplay: true,
+			workDisplay: workDisplay,
 		}
+		WorkerPool = append(WorkerPool, w)
 		w.Start()
 	}
 	return
 }
 
+//SetWorkDisplay enable or disable work display of worker
+func SetWorkDisplay(wd bool) {
+	workDisplay = wd
+}
+
 //starthandler call handler
 func (w *Worker) starthandler(job Job) {
-	if w.handler(job.Value...) {
-		fmt.Println(w.workerID, "DONE")
+	sTime := time.Now()
+	if w.workDisplay {
+		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID, sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
+	w.handler(job.Value...)
+	if w.workDisplay {
+		fmt.Printf("Worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
+	}
+	w.jobPool.wg.Done()
 }
 
 //Start worker
 func (w *Worker) Start() {
-	select {
-	case job := <-w.jobPool.job:
-		w.starthandler(job)
-	default:
-		fmt.Println("not found")
-	}
+	go func() {
+		for {
+			job := <-w.jobPool.job
+			w.starthandler(job)
+		}
+	}()
 }
