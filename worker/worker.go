@@ -59,8 +59,7 @@ func (w *Worker) starthandler(job Job) {
 //Start worker
 func (w *Worker) Start() {
 	go func() {
-		for {
-			job := <-w.jobPool.job
+		for job := range w.jobPool.job {
 			w.starthandler(job)
 		}
 	}()

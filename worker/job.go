@@ -20,7 +20,8 @@ func (jp *JobPool) AddJob(value ...interface{}) {
 	}
 }
 
-//Wait till job is not done
-func (jp *JobPool) Wait() {
+//Close the job pool
+func (jp *JobPool) Close() {
+	close(jp.job)
 	jp.wg.Wait()
 }
