@@ -32,6 +32,11 @@ func (jobPool *JobPool) SetWorkDisplay(wd bool) {
 	jobPool.workDisplay = wd
 }
 
+//SetLogger : enable or disable error logger
+func (jobPool *JobPool) SetLogger(log bool) {
+	jobPool.log = log
+}
+
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now().Nanosecond()
