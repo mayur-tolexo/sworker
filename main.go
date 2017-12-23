@@ -17,7 +17,7 @@ func main() {
 	//jobpool created
 	jp := worker.NewJobPool(2)
 
-	//5 worker created
+	//50 worker created
 	worker.NewWorker(50, jp, handler)
 
 	//job added in jobpool
