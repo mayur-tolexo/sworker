@@ -12,16 +12,37 @@ func NewJobPool(bufferSize int) *JobPool {
 }
 
 //AddJob new job in job pool
-func (jp *JobPool) AddJob(value ...interface{}) {
-	jp.wg.Add(1)
-	jp.job <- Job{
+func (jobPool *JobPool) AddJob(value ...interface{}) {
+	jobPool.wg.Add(1)
+	jobPool.job <- Job{
 		Runtime: time.Now(),
 		Value:   value,
 	}
 }
 
 //Close the job pool
-func (jp *JobPool) Close() {
-	close(jp.job)
-	jp.wg.Wait()
+func (jobPool *JobPool) Close() {
+	close(jobPool.job)
+	jobPool.wg.Wait()
+}
+
+//SetWorkDisplay : enable or disable work display of worker
+func (jobPool *JobPool) SetWorkDisplay(wd bool) {
+	jobPool.workDisplay = wd
+}
+
+//StartWorker : start worker
+func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
+	for i := 1; i <= noOfWorker; i++ {
+		w := &Worker{
+			workerID:    i,
+			jobPool:     jobPool,
+			logPool:     logPool,
+			handler:     handler,
+			log:         true,
+			workDisplay: jobPool.workDisplay,
+		}
+		WorkerPool = append(WorkerPool, w)
+		w.Start()
+	}
 }

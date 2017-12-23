@@ -21,28 +21,6 @@ func init() {
 	logPool = make(chan interface{}, BUFFER_SIZE)
 }
 
-//NewWorker create new worker and start the job execution
-func NewWorker(noOfWorker int, jobPool *JobPool, handler Handler) {
-	for i := 1; i <= noOfWorker; i++ {
-		w := &Worker{
-			workerID:    i,
-			jobPool:     jobPool,
-			logPool:     logPool,
-			handler:     handler,
-			log:         true,
-			workDisplay: workDisplay,
-		}
-		WorkerPool = append(WorkerPool, w)
-		w.Start()
-	}
-	return
-}
-
-//SetWorkDisplay : enable or disable work display of worker
-func SetWorkDisplay(wd bool) {
-	workDisplay = wd
-}
-
 //startHandler : call handler of the current worker
 func (w *Worker) startHandler(job Job) {
 	sTime := time.Now()

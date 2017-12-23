@@ -7,8 +7,9 @@ import (
 
 //JobPool contain job pool and wait group
 type JobPool struct {
-	job chan Job
-	wg  sync.WaitGroup
+	job         chan Job
+	wg          sync.WaitGroup
+	workDisplay bool
 }
 
 //Job model
