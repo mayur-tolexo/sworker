@@ -10,7 +10,6 @@ var (
 	logPool     chan interface{}
 	WG          sync.WaitGroup
 	workDisplay bool
-	WorkerPool  []*Worker
 )
 
 const (

@@ -43,7 +43,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 			log:         true,
 			workDisplay: jobPool.workDisplay,
 		}
-		WorkerPool = append(WorkerPool, w)
+		jobPool.workerPool = append(jobPool.workerPool, w)
 		w.start()
 	}
 }

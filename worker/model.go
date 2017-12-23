@@ -10,6 +10,7 @@ type JobPool struct {
 	job         chan Job
 	wg          sync.WaitGroup
 	workDisplay bool
+	workerPool  []*Worker
 }
 
 //Job model
