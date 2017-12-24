@@ -15,7 +15,7 @@ func (w *worker) startHandler(job Job) {
 			if w.jobPool.log {
 				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
-				fmt.Println("Panic Recovered:\n", rec)
+				fmt.Printf("\nPANIC RECOVERED: %v\nJOB VALUE: %v\n", rec, jobValue)
 			}
 		}
 	}(job.Value)
@@ -27,7 +27,7 @@ func (w *worker) startHandler(job Job) {
 		if w.jobPool.log {
 			w.log(errorLog{logValue: err.Error(), jobValue: job.Value})
 		} else {
-			fmt.Println("Error while processing handler:\n", err.Error())
+			fmt.Printf("\nERROR IN PROCESSING HANDLER: %v\nJOB VALUE: %v\n", err.Error(), job.Value)
 		}
 	}
 	if w.jobPool.workDisplay {
