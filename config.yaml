@@ -1,0 +1,2 @@
+logs:
+  error_log: ERROR_LOG_PATH
