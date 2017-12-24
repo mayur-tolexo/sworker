@@ -16,6 +16,7 @@ Here PrintAll is a handler function. Define your own handler and pass it in the 
 
 # Example
 ```
+
 //PrintAll : function which worker will call to execute
 func PrintAll(value ...interface{}) error {
 	fmt.Println(value)
@@ -29,12 +30,11 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(4)
+	jp := worker.NewJobPool(3)
 
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")
-	jp.AddJob("YOYOYO")
 	jp.AddJob(1001)
 
 	//5 worker started
