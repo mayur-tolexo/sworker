@@ -10,22 +10,22 @@ func (w *worker) startHandler(job Job) {
 	defer w.jobPool.wg.Done()
 
 	sTime := time.Now()
-	defer func(sTime time.Time) {
+	defer func(jobValue interface{}) {
 		if rec := recover(); rec != nil {
 			if w.jobPool.log {
-				w.log(errorLog{logValue: rec, logTime: sTime})
+				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
 				fmt.Println("Panic Recovered:\n", rec)
 			}
 		}
-	}(sTime)
+	}(job.Value)
 	if w.jobPool.workDisplay {
 		fmt.Printf("worker: %d STARTED at %v:%v:%v\n", w.workerID,
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	if err := w.handler(job.Value...); err != nil {
 		if w.jobPool.log {
-			w.log(errorLog{logValue: err.Error(), logTime: sTime})
+			w.log(errorLog{logValue: err.Error(), jobValue: job.Value})
 		} else {
 			fmt.Println("Error while processing handler:\n", err.Error())
 		}

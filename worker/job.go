@@ -14,9 +14,8 @@ import (
 //NewJobPool create new job pool
 func NewJobPool(bufferSize int) *JobPool {
 	return &JobPool{
-		job:        make(chan Job, bufferSize),
-		log:        true,
-		stackTrace: true,
+		job: make(chan Job, bufferSize),
+		log: true,
 	}
 }
 
@@ -86,10 +85,11 @@ func (jobPool *JobPool) initErrorLog(sTime time.Time) {
 
 //logError will log given error
 func (jobPool *JobPool) logError(err errorLog) {
-	logger := log.New(jobPool.errorFP, "\n", 5)
+	logger := log.New(jobPool.errorFP, "\n", 2)
 	if jobPool.stackTrace {
-		logger.Printf("ERROR:\n%v\nSTACK TRACE:\n%v", err.logValue, string(debug.Stack()))
+		logger.Printf("\nERROR:%v\nJOB VALUE: %v\nSTACK TRACE:\n%v", err.logValue, err.jobValue,
+			string(debug.Stack()))
 	} else {
-		logger.Printf("ERROR:\n%v", err.logValue)
+		logger.Printf("\nERROR:%v\nJOB VALUE: %v", err.logValue, err.jobValue)
 	}
 }

@@ -20,7 +20,7 @@ type JobPool struct {
 //errorLog model
 type errorLog struct {
 	logValue interface{}
-	logTime  time.Time
+	jobValue interface{}
 }
 
 //Job model
