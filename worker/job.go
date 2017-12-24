@@ -79,7 +79,7 @@ func (jobPool *JobPool) initErrorLog(sTime time.Time) {
 		sTime.Day(), sTime.Month(), sTime.Year())
 	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND,
 		0666); fileErr != nil {
-		fmt.Println("Could not create the panic log file", fileErr.Error())
+		fmt.Println("Couldn't able to create the error log file", fileErr.Error())
 	}
 }
 
