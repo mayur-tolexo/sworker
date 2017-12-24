@@ -54,3 +54,9 @@ func main() {
   By default it's false but to activate it
   jb.SetWorkDisplay(true)
 ```
+
+# To change error log path
+```
+create config.yaml file in package
+add field logs: error_logs: YOUR_ERROR_PATH (as mentioned in config.yaml file in this repo)
+```
