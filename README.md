@@ -39,8 +39,8 @@ func main() {
 # SetStackTrace
 ```
   To log complete stacktrace of the error
-  By default it's true but to deactivate it
-  jp.SetStackTrace(false)
+  By default it's false but to activate it
+  jp.SetStackTrace(true)
 ```
 # SetLogger
 ```
