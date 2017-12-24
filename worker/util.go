@@ -2,12 +2,13 @@ package worker
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 )
 
-//InterfaceToInt return int value of given interface
-func InterfaceToInt(value interface{}) (int, error) {
+//IfToI converts interface value to int
+func IfToI(value interface{}) (int, error) {
 	var (
 		intVal int
 		err    error
@@ -30,8 +31,8 @@ func InterfaceToInt(value interface{}) (int, error) {
 	return intVal, err
 }
 
-//InterfaceToFloat return float value of given interface
-func InterfaceToFloat(value interface{}) (float64, error) {
+//IfToF converts interface value to float
+func IfToF(value interface{}) (float64, error) {
 	var (
 		floatVal float64
 		err      error
@@ -52,4 +53,9 @@ func InterfaceToFloat(value interface{}) (float64, error) {
 		err = errors.New("Not Able to typecast " + objKind.String() + " to float64")
 	}
 	return floatVal, err
+}
+
+//IfToA converts interface value to string
+func IfToA(value interface{}) string {
+	return fmt.Sprintf("%v", value)
 }
