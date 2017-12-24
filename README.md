@@ -1,6 +1,11 @@
 # sworker
 Easy worker setup for your code.
 
+# install
+```
+go get github.com/mayur-tolexo/sworker/worker
+```
+
 # Example
 ```
 //PrintAll : function which worker will call to execute
@@ -31,16 +36,20 @@ func main() {
 }
 ```
 # SetStackTrace
+```
   To log complete stacktrace of the error
   By default it's true but to deactivate it
   jp.SetStackTrace(false)
-  
+```
 # SetLogger
+```
   To log all error
   By default it's true but to deactivate it
   jb.SetLogger(false)
-  
+``` 
 # SetWorkDisplay
+```
   To Print worker start time and end time while processing handler
   By default it's false but to activate it
   jb.SetWorkDisplay(true)
+```
