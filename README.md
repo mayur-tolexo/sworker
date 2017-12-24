@@ -68,3 +68,43 @@ func main() {
 create config.yaml file in package
 add field logs: error_logs: YOUR_ERROR_PATH (as mentioned in config.yaml file in this repo)
 ```
+
+# Worker inside worker example
+```
+//ChildHandler : second handler
+func ChildHandler(value ...interface{}) error {
+	fmt.Println("CHILD", value)
+	return nil
+}
+
+//PrintAll : function which worker will call to execute
+func PrintAll(value ...interface{}) error {
+	fmt.Println("PARENT", value)
+	jp := worker.NewJobPool(1)
+	jp.AddJob("World")
+	jp.StartWorker(3, ChildHandler)
+	jp.Close()
+	return nil
+}
+
+//main function
+func main() {
+
+	//handler to which worker will call
+	handler := PrintAll
+
+	//jobpool created
+	jp := worker.NewJobPool(3)
+
+	//job added in jobpool
+	jp.AddJob("Hello", "Hello")
+	jp.AddJob("Mayur")
+	jp.AddJob(1001)
+
+	//5 worker started
+	jp.StartWorker(5, handler)
+
+	//close the jobpool
+	jp.Close()
+}
+```
