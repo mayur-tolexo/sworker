@@ -57,7 +57,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 		jobPool.initErrorLog(sTime)
 	}
 	for i := 1; i <= noOfWorker; i++ {
-		w := &Worker{
+		w := &worker{
 			workerID: i + sTime.Nanosecond(),
 			jobPool:  jobPool,
 			handler:  handler,
@@ -68,7 +68,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 }
 
 //GetWorkers return the worker of the current jobpool
-func (jobPool *JobPool) GetWorkers() []*Worker {
+func (jobPool *JobPool) GetWorkers() []*worker {
 	return jobPool.workerPool
 }
 

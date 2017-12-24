@@ -6,7 +6,7 @@ import (
 )
 
 //startHandler : call handler of the current worker
-func (w *Worker) startHandler(job Job) {
+func (w *worker) startHandler(job Job) {
 	defer w.jobPool.wg.Done()
 
 	sTime := time.Now()
@@ -18,7 +18,7 @@ func (w *Worker) startHandler(job Job) {
 		}(sTime)
 	}
 	if w.jobPool.workDisplay {
-		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID,
+		fmt.Printf("worker: %d STARTED at %v:%v:%v\n", w.workerID,
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	if err := w.handler(job.Value...); err != nil {
@@ -27,12 +27,12 @@ func (w *Worker) startHandler(job Job) {
 		}
 	}
 	if w.jobPool.workDisplay {
-		fmt.Printf("Worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
+		fmt.Printf("worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
 	}
 }
 
 //Start worker
-func (w *Worker) start() {
+func (w *worker) start() {
 	go func() {
 		for job := range w.jobPool.job {
 			w.startHandler(job)
@@ -41,7 +41,7 @@ func (w *Worker) start() {
 }
 
 //log start logging
-func (w *Worker) log(log errorLog) {
+func (w *worker) log(log errorLog) {
 	defer func() {
 		if rec := recover(); rec != nil {
 			fmt.Println("Error while logging:\n", rec)
