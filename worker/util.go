@@ -31,6 +31,20 @@ func IfToI(value interface{}) (int, error) {
 	return intVal, err
 }
 
+//IfToISlice converts slice of interface value to int slice
+func IfToISlice(value []interface{}) ([]int, error) {
+	var (
+		intVal = make([]int, len(value))
+		err    error
+	)
+	for index, curValue := range value {
+		if intVal[index], err = IfToI(curValue); err != nil {
+			break
+		}
+	}
+	return intVal, err
+}
+
 //IfToF converts interface value to float
 func IfToF(value interface{}) (float64, error) {
 	var (
@@ -55,7 +69,30 @@ func IfToF(value interface{}) (float64, error) {
 	return floatVal, err
 }
 
+//IfToFSlice converts slice of interface value to float slice
+func IfToFSlice(value []interface{}) ([]float64, error) {
+	var (
+		floatVal = make([]float64, len(value))
+		err      error
+	)
+	for index, curValue := range value {
+		if floatVal[index], err = IfToF(curValue); err != nil {
+			break
+		}
+	}
+	return floatVal, err
+}
+
 //IfToA converts interface value to string
 func IfToA(value interface{}) string {
 	return fmt.Sprintf("%v", value)
+}
+
+//IfToASlice converts slice of interface value to string slice
+func IfToASlice(value []interface{}) []string {
+	var floatVal = make([]string, len(value))
+	for index, curValue := range value {
+		floatVal[index] = IfToA(curValue)
+	}
+	return floatVal
 }
