@@ -25,6 +25,7 @@ func main() {
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")
 	jp.AddJob("YOYOYO")
+	jp.AddJob(1001)
 
 	//5 worker started
 	jp.StartWorker(5, handler)

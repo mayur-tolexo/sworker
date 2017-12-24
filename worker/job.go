@@ -29,7 +29,7 @@ func (jobPool *JobPool) AddJob(value ...interface{}) {
 	}
 }
 
-//Close the job pool
+//Close the job pool and wait until all the jobs are completed
 func (jobPool *JobPool) Close() {
 	close(jobPool.job)
 	jobPool.wg.Wait()
