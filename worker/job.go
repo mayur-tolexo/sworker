@@ -87,8 +87,6 @@ func (jobPool *JobPool) initErrorLog(sTime time.Time) {
 //logError will log given error
 func (jobPool *JobPool) logError(err errorLog) {
 	logger := log.New(jobPool.errorFP, "\n", 5)
-	// logger.Print("Time: ", curTime, "  serviceID: ", serviceID,
-	// "  requestURI: ", requestURI, "\n", string(debug.Stack()))
 	if jobPool.stackTrace {
 		logger.Printf("ERROR:\n%v\nSTACK TRACE:\n%v", err.logValue, string(debug.Stack()))
 	} else {
