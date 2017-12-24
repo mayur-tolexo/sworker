@@ -6,6 +6,14 @@ Easy worker setup for your code.
 go get github.com/mayur-tolexo/sworker/worker
 ```
 
+# Handler
+```
+handler is a function to which the worker will call. it is a function like:
+func(value ...interface{}) error
+
+Here PrintAll is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
+```
+
 # Example
 ```
 //PrintAll : function which worker will call to execute
