@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"os"
 	"sync"
 	"time"
 )
@@ -11,6 +12,8 @@ type JobPool struct {
 	wg          sync.WaitGroup
 	workDisplay bool
 	log         bool
+	stackTrace  bool
+	errorFP     *os.File
 	workerPool  []*Worker
 }
 

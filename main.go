@@ -20,6 +20,7 @@ func main() {
 
 	//jobpool created
 	jp := worker.NewJobPool(4)
+
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")

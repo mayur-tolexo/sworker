@@ -10,18 +10,21 @@ func (w *Worker) startHandler(job Job) {
 	defer w.jobPool.wg.Done()
 
 	sTime := time.Now()
-	defer func(sTime time.Time) {
-		if rec := recover(); rec != nil {
-			w.log(errorLog{logValue: rec, logTime: sTime})
-		}
-	}(sTime)
-
+	if w.jobPool.log {
+		defer func(sTime time.Time) {
+			if rec := recover(); rec != nil {
+				w.log(errorLog{logValue: rec, logTime: sTime})
+			}
+		}(sTime)
+	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("Worker: %d STARTED at %v:%v:%v\n", w.workerID,
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	if err := w.handler(job.Value...); err != nil {
-		w.log(errorLog{logValue: err.Error(), logTime: sTime})
+		if w.jobPool.log {
+			w.log(errorLog{logValue: err.Error(), logTime: sTime})
+		}
 	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("Worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
@@ -39,5 +42,10 @@ func (w *Worker) start() {
 
 //log start logging
 func (w *Worker) log(log errorLog) {
-	fmt.Println(log.logValue)
+	defer func() {
+		if rec := recover(); rec != nil {
+			fmt.Println("Error while logging:\n", rec)
+		}
+	}()
+	w.jobPool.logError(log)
 }
