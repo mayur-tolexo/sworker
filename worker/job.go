@@ -87,9 +87,9 @@ func (jobPool *JobPool) initErrorLog(sTime time.Time) {
 func (jobPool *JobPool) logError(err errorLog) {
 	logger := log.New(jobPool.errorFP, "\n", 2)
 	if jobPool.stackTrace {
-		logger.Printf("\nERROR:%v\nJOB VALUE: %v\nSTACK TRACE:\n%v", err.logValue, err.jobValue,
+		logger.Printf("\nERROR: %v\nJOB VALUE: %v\nSTACK TRACE:\n%v", err.logValue, err.jobValue,
 			string(debug.Stack()))
 	} else {
-		logger.Printf("\nERROR:%v\nJOB VALUE: %v", err.logValue, err.jobValue)
+		logger.Printf("\nERROR: %v\nJOB VALUE: %v", err.logValue, err.jobValue)
 	}
 }
