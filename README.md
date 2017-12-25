@@ -8,7 +8,9 @@ go get github.com/mayur-tolexo/sworker/worker
 
 # Handler
 ```
-handler is a function to which the worker will call. it is a function like:
+handler is a function to which the worker will call.
+
+FUNCTION DEFINATION:
 func(value ...interface{}) error
 
 Here PrintAll is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
