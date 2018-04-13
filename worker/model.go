@@ -36,5 +36,6 @@ type Handler func(value ...interface{}) error
 type worker struct {
 	workerID int
 	jobPool  *JobPool
+	quit     chan int
 	handler  Handler
 }
