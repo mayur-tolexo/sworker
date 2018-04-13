@@ -19,15 +19,15 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(3, handler)
-
-	// jp.KillWorker()
+	jp := worker.NewJobPool(3)
 
 	//job added in jobpool
-	jp.SetWorkDisplay(true)
 	jp.AddJob("Hello", "Mayur")
-	jp.AddJob("World", 12345)
+	jp.AddJob("World")
 	jp.AddJob(1001)
+
+	//5 worker started
+	jp.StartWorker(5, handler)
 
 	//close the jobpool
 	jp.Close()

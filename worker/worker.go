@@ -38,14 +38,8 @@ func (w *worker) startHandler(job Job) {
 //Start worker
 func (w *worker) start() {
 	go func() {
-		for {
-			select {
-			case <-w.quit:
-				return
-			case job := <-w.jobPool.job:
-				w.startHandler(job)
-			default:
-			}
+		for job := range w.jobPool.job {
+			w.startHandler(job)
 		}
 	}()
 }

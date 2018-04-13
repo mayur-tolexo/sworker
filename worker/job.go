@@ -12,13 +12,11 @@ import (
 )
 
 //NewJobPool create new job pool
-func NewJobPool(noOfWorker int, handler Handler) *JobPool {
-	jp := &JobPool{
-		job: make(chan Job),
+func NewJobPool(bufferSize int) *JobPool {
+	return &JobPool{
+		job: make(chan Job, bufferSize),
 		log: true,
 	}
-	jp.StartWorker(noOfWorker, handler)
-	return jp
 }
 
 //AddJob new job in job pool
@@ -61,7 +59,6 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 		w := &worker{
 			workerID: i + sTime.Nanosecond(),
 			jobPool:  jobPool,
-			quit:     make(chan int, 2),
 			handler:  handler,
 		}
 		jobPool.workerPool = append(jobPool.workerPool, w)
@@ -72,33 +69,6 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 //GetWorkers return the worker of the current jobpool
 func (jobPool *JobPool) GetWorkers() []*worker {
 	return jobPool.workerPool
-}
-
-//GetWorkerCount return the total worker count
-func (jobPool *JobPool) GetWorkerCount() (n int) {
-	n = len(jobPool.workerPool)
-	return
-}
-
-//KillWorker will kill the workers
-func (jobPool *JobPool) KillWorker(n ...int) {
-	count := 1
-	if len(n) > 0 {
-		count = n[0]
-	}
-	totalWorker := jobPool.GetWorkerCount()
-	if count >= totalWorker {
-		count = totalWorker - 1
-	}
-	for i, curWorker := range jobPool.workerPool {
-		if count == 0 {
-			break
-		}
-		curWorker.quit <- 1
-		jobPool.workerPool = jobPool.workerPool[i+1:]
-		count--
-	}
-	return
 }
 
 //initErrorLog will initialize logger
