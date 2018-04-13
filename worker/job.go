@@ -13,10 +13,14 @@ import (
 
 //NewJobPool create new job pool
 func NewJobPool(bufferSize int) *JobPool {
-	return &JobPool{
+	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 		log: true,
 	}
+	if jp.log {
+		jp.initErrorLog()
+	}
+	return jp
 }
 
 //AddJob new job in job pool
@@ -52,13 +56,12 @@ func (jobPool *JobPool) SetStackTrace(st bool) {
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
-	if jobPool.log {
-		jobPool.initErrorLog(sTime)
-	}
+
 	for i := 1; i <= noOfWorker; i++ {
 		w := &worker{
 			workerID: i + sTime.Nanosecond(),
 			jobPool:  jobPool,
+			quit:     make(chan int, 2),
 			handler:  handler,
 		}
 		jobPool.workerPool = append(jobPool.workerPool, w)
@@ -71,9 +74,24 @@ func (jobPool *JobPool) GetWorkers() []*worker {
 	return jobPool.workerPool
 }
 
+//WorkerCount return the worker count
+func (jobPool *JobPool) WorkerCount() int {
+	return len(jobPool.workerPool)
+}
+
+//KillWorker will kill worker
+func (jobPool *JobPool) KillWorker() {
+	total := jobPool.WorkerCount()
+	if total > 1 {
+		jobPool.workerPool[0].quit <- 1
+		jobPool.workerPool = jobPool.workerPool[1:]
+	}
+}
+
 //initErrorLog will initialize logger
-func (jobPool *JobPool) initErrorLog(sTime time.Time) {
+func (jobPool *JobPool) initErrorLog() {
 	var fileErr error
+	sTime := time.Now()
 	path := conf.String("error_log", "logs.error_log")
 	path = fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(path, ".log"),
 		sTime.Day(), sTime.Month(), sTime.Year())

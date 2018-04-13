@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/mayur-tolexo/sworker/worker"
 )
@@ -15,20 +16,27 @@ func PrintAll(value ...interface{}) error {
 //main function
 func main() {
 
+	sTime := time.Now()
+
 	//handler to which worker will call
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(3)
+	jp := worker.NewJobPool(10)
+
+	//5 worker started
+	jp.StartWorker(2, handler)
 
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")
 	jp.AddJob(1001)
+	jp.KillWorker()
 
-	//5 worker started
-	jp.StartWorker(5, handler)
-
+	for i := 0; i < 100; i++ {
+		jp.AddJob(i)
+	}
 	//close the jobpool
 	jp.Close()
+	fmt.Println(time.Since(sTime))
 }

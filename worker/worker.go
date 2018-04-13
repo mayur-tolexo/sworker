@@ -39,7 +39,17 @@ func (w *worker) startHandler(job Job) {
 func (w *worker) start() {
 	go func() {
 		for job := range w.jobPool.job {
+			var quit bool
+			select {
+			case <-w.quit:
+				quit = true
+			default:
+				quit = false
+			}
 			w.startHandler(job)
+			if quit {
+				break
+			}
 		}
 	}()
 }
