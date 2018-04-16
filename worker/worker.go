@@ -29,6 +29,8 @@ func (w *worker) startHandler(job Job) {
 		} else {
 			fmt.Printf("\nERROR IN PROCESSING HANDLER: %v\nJOB VALUE: %v\n", err.Error(), job.Value)
 		}
+	} else {
+		w.jobPool.jobCounterPool <- true
 	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())

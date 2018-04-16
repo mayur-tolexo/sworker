@@ -63,6 +63,9 @@ func (jobPool *JobPool) SetStackTrace(st bool) {
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
+	jobPool.startTime = sTime
+	jobPool.jobCounterPool = make(chan bool, noOfWorker)
+	jobPool.startCounter()
 
 	for i := 1; i <= noOfWorker; i++ {
 		w := &worker{
@@ -76,9 +79,29 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	}
 }
 
+func (jobPool *JobPool) startCounter() {
+	go func() {
+		for {
+			select {
+			case <-jobPool.jobCounterPool:
+				jobPool.jobCounter++
+				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
+					fmt.Printf("%d\tJOBs DONE IN\t%v SEC\n", jobPool.jobCounter, time.Since(jobPool.startTime).Seconds())
+				}
+			default:
+			}
+		}
+	}()
+}
+
 //GetWorkers return the worker of the current jobpool
 func (jobPool *JobPool) GetWorkers() []*worker {
 	return jobPool.workerPool
+}
+
+//BatchSize will set profiling batch size for the counter
+func (jobPool *JobPool) BatchSize(n int) {
+	jobPool.batchSize = n
 }
 
 //WorkerCount return the worker count
