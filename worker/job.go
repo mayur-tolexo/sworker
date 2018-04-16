@@ -32,10 +32,17 @@ func (jobPool *JobPool) AddJob(value ...interface{}) {
 	}
 }
 
+//CurrentBuffSize returns the current data size in buffer
+func (jobPool *JobPool) CurrentBuffSize() (n int) {
+	n = len(jobPool.job)
+	return
+}
+
 //Close the job pool and wait until all the jobs are completed
 func (jobPool *JobPool) Close() {
 	close(jobPool.job)
 	jobPool.wg.Wait()
+	jobPool.KillWorker(jobPool.WorkerCount())
 }
 
 //SetWorkDisplay : enable or disable work display of worker
@@ -80,11 +87,22 @@ func (jobPool *JobPool) WorkerCount() int {
 }
 
 //KillWorker will kill worker
-func (jobPool *JobPool) KillWorker() {
+func (jobPool *JobPool) KillWorker(n ...int) {
+	killCount := 1
+	if len(n) > 0 {
+		killCount = n[0]
+	}
 	total := jobPool.WorkerCount()
-	if total > 1 {
-		jobPool.workerPool[0].quit <- 1
-		jobPool.workerPool = jobPool.workerPool[1:]
+	if (total - 1) < killCount {
+		killCount = total - 1
+	}
+	for i := 0; i < killCount; i++ {
+		jobPool.workerPool[i].quit <- 1
+	}
+	if killCount == total {
+		jobPool.workerPool = nil
+	} else {
+		jobPool.workerPool = jobPool.workerPool[killCount:]
 	}
 }
 
