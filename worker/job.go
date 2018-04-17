@@ -40,9 +40,9 @@ func (jobPool *JobPool) CurrentBuffSize() (n int) {
 
 //Close the job pool and wait until all the jobs are completed
 func (jobPool *JobPool) Close() {
-	close(jobPool.job)
+	// close(jobPool.job)
 	jobPool.wg.Wait()
-	jobPool.KillWorker(jobPool.WorkerCount())
+	// jobPool.KillWorker(jobPool.WorkerCount())
 }
 
 //SetWorkDisplay : enable or disable work display of worker
