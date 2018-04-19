@@ -104,6 +104,16 @@ func (jobPool *JobPool) GetJobCount() int {
 	return jobPool.jobCounter
 }
 
+//GetBufferSize return the job buffer count
+func (jobPool *JobPool) GetBufferSize() int {
+	return len(jobPool.job)
+}
+
+//ResetCounter will reset the job counter
+func (jobPool *JobPool) ResetCounter() {
+	jobPool.jobCounter = 0
+}
+
 //BatchSize will set profiling batch size for the counter
 func (jobPool *JobPool) BatchSize(n int) {
 	jobPool.batchSize = n
