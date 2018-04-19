@@ -25,9 +25,9 @@ func (w *worker) startHandler(job Job) {
 	}
 	if err := w.handler(job.Value...); err != nil {
 		if w.jobPool.log {
-			w.log(errorLog{logValue: err.Error(), jobValue: job.Value})
+			w.log(errorLog{logValue: err, jobValue: job.Value})
 		} else {
-			fmt.Printf("\nERROR IN PROCESSING HANDLER: %v\nJOB VALUE: %v\n", err.Error(), job.Value)
+			fmt.Printf("\nERROR IN PROCESSING HANDLER: %v\nJOB VALUE: %v\n", err, job.Value)
 		}
 	} else {
 		w.jobPool.jobCounterPool <- true
