@@ -120,6 +120,7 @@ func (jobPool *JobPool) GetBufferSize() int {
 //ResetCounter will reset the job counter
 func (jobPool *JobPool) ResetCounter() {
 	jobPool.jobCounter = 0
+	jobPool.ErrorCount = 0
 }
 
 //BatchSize will set profiling batch size for the counter
