@@ -12,6 +12,7 @@ func (w *worker) startHandler(job Job) {
 	sTime := time.Now()
 	defer func(jobValue interface{}) {
 		if rec := recover(); rec != nil {
+			w.jobPool.errorCounterPool <- true
 			if w.jobPool.log {
 				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
@@ -24,6 +25,7 @@ func (w *worker) startHandler(job Job) {
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	if err := w.handler(job.Value...); err != nil {
+		w.jobPool.errorCounterPool <- true
 		if w.jobPool.log {
 			w.log(errorLog{logValue: err, jobValue: job.Value})
 		} else {

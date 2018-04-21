@@ -8,17 +8,19 @@ import (
 
 //JobPool contain job pool and wait group
 type JobPool struct {
-	job            chan Job
-	jobCounter     int
-	jobCounterPool chan bool
-	batchSize      int
-	startTime      time.Time
-	wg             sync.WaitGroup
-	workDisplay    bool
-	log            bool
-	stackTrace     bool
-	errorFP        *os.File
-	workerPool     []*worker
+	job              chan Job
+	jobCounter       int
+	wErrorCounter    int
+	jobCounterPool   chan bool
+	errorCounterPool chan bool
+	batchSize        int
+	startTime        time.Time
+	wg               sync.WaitGroup
+	workDisplay      bool
+	log              bool
+	stackTrace       bool
+	errorFP          *os.File
+	workerPool       []*worker
 }
 
 //errorLog model

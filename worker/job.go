@@ -65,6 +65,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
 	jobPool.startTime = sTime
 	jobPool.jobCounterPool = make(chan bool, noOfWorker)
+	jobPool.errorCounterPool = make(chan bool, noOfWorker)
 	jobPool.startCounter()
 
 	for i := 1; i <= noOfWorker; i++ {
@@ -88,6 +89,8 @@ func (jobPool *JobPool) startCounter() {
 				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
 					fmt.Printf("%d\tJOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter, time.Since(jobPool.startTime).Seconds())
 				}
+			case <-jobPool.errorCounterPool:
+				jobPool.wErrorCounter++
 			default:
 			}
 		}
@@ -102,6 +105,11 @@ func (jobPool *JobPool) GetWorkers() []*worker {
 //GetJobCount return the successful job count
 func (jobPool *JobPool) GetJobCount() int {
 	return jobPool.jobCounter
+}
+
+//ErrorCount return the worker error count
+func (jobPool *JobPool) ErrorCount() int {
+	return jobPool.wErrorCounter
 }
 
 //GetBufferSize return the job buffer count
