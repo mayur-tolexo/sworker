@@ -102,8 +102,8 @@ func (jobPool *JobPool) GetWorkers() []*worker {
 	return jobPool.workerPool
 }
 
-//GetJobCount return the successful job count
-func (jobPool *JobPool) GetJobCount() int {
+//SuccessCount return the successful job count
+func (jobPool *JobPool) SuccessCount() int {
 	return jobPool.jobCounter
 }
 
