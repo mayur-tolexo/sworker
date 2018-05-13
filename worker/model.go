@@ -8,6 +8,7 @@ import (
 
 //JobPool contain job pool and wait group
 type JobPool struct {
+	Tag              string
 	job              chan Job
 	jobCounter       int
 	wErrorCounter    int
@@ -18,6 +19,7 @@ type JobPool struct {
 	wg               sync.WaitGroup
 	workDisplay      bool
 	log              bool
+	logPath          string
 	stackTrace       bool
 	errorFP          *os.File
 	workerPool       []*worker

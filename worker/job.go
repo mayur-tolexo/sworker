@@ -12,10 +12,13 @@ import (
 )
 
 //NewJobPool create new job pool
-func NewJobPool(bufferSize int) *JobPool {
+func NewJobPool(bufferSize int, logPath ...string) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 		log: true,
+	}
+	if len(logPath) > 0 {
+		jp.logPath = logPath[0]
 	}
 	if jp.log {
 		jp.initErrorLog()
@@ -158,6 +161,9 @@ func (jobPool *JobPool) initErrorLog() {
 	var fileErr error
 	sTime := time.Now()
 	path := conf.String("error_log", "logs.error_log")
+	if jobPool.logPath != "" {
+		path = jobPool.logPath
+	}
 	path = fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(path, ".log"),
 		sTime.Day(), sTime.Month(), sTime.Year())
 	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND,
@@ -170,9 +176,9 @@ func (jobPool *JobPool) initErrorLog() {
 func (jobPool *JobPool) logError(err errorLog) {
 	logger := log.New(jobPool.errorFP, "\n", 2)
 	if jobPool.stackTrace {
-		logger.Printf("\nERROR: %v\nJOB VALUE: %v\nSTACK TRACE:\n%v", err.logValue, err.jobValue,
+		logger.Printf("\nERROR:%v %v\nJOB VALUE: %v\nSTACK TRACE:\n%v", jobPool.Tag, err.logValue, err.jobValue,
 			string(debug.Stack()))
 	} else {
-		logger.Printf("\nERROR: %v\nJOB VALUE: %v", err.logValue, err.jobValue)
+		logger.Printf("\nERROR:%v %v\nJOB VALUE: %v", jobPool.Tag, err.logValue, err.jobValue)
 	}
 }
