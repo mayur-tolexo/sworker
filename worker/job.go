@@ -13,10 +13,6 @@ import (
 func NewJobPool(bufferSize int) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
-		log: true,
-	}
-	if jp.log {
-		jp.initErrorLog()
 	}
 	return jp
 }
@@ -49,8 +45,12 @@ func (jobPool *JobPool) SetWorkDisplay(wd bool) {
 }
 
 //SetLogger : enable or disable error logger
-func (jobPool *JobPool) SetLogger(log bool) {
+func (jobPool *JobPool) SetLogger(log bool, path string) {
 	jobPool.log = log
+	jobPool.LogPath = path
+	if log {
+		jobPool.initErrorLog()
+	}
 }
 
 //SetStackTrace : enable or disable error stackTrace
