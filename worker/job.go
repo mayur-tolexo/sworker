@@ -7,18 +7,14 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
-
-	"github.com/tolexo/aero/conf"
 )
 
 //NewJobPool create new job pool
-func NewJobPool(tag string, bufferSize int) *JobPool {
+func NewJobPool(bufferSize int) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 		log: true,
-		Tag: tag,
 	}
-	jp.logPath = conf.String(tag+".error_log", "error_log")
 	if jp.log {
 		jp.initErrorLog()
 	}
@@ -159,7 +155,10 @@ func (jobPool *JobPool) KillWorker(n ...int) {
 func (jobPool *JobPool) initErrorLog() {
 	var fileErr error
 	sTime := time.Now()
-	path := fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(jobPool.logPath, ".log"),
+	if jobPool.LogPath == "" {
+		jobPool.LogPath = jobPool.Tag + ".error_log"
+	}
+	path := fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(jobPool.LogPath, ".log"),
 		sTime.Day(), sTime.Month(), sTime.Year())
 	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND,
 		0666); fileErr != nil {

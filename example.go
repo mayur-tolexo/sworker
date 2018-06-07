@@ -22,7 +22,7 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool("example", 10)
+	jp := worker.NewJobPool(10)
 
 	//5 worker started
 	jp.StartWorker(2, handler)
@@ -33,7 +33,7 @@ func main() {
 	jp.AddJob(1001)
 	jp.KillWorker()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 5; i++ {
 		jp.AddJob(i)
 	}
 	//close the jobpool

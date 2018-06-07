@@ -2,6 +2,7 @@ package worker
 
 import (
 	"fmt"
+	"runtime/debug"
 	"time"
 )
 
@@ -16,7 +17,7 @@ func (w *worker) startHandler(job Job) {
 			if w.jobPool.log {
 				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
-				fmt.Printf("\nPANIC RECOVERED: %v\nJOB VALUE: %v\n", rec, jobValue)
+				fmt.Printf("\nPANIC RECOVERED:%v %v\n%v\nJOB VALUE: %v\n", w.jobPool.Tag, rec, string(debug.Stack()), jobValue)
 			}
 		}
 	}(job.Value)
@@ -29,7 +30,7 @@ func (w *worker) startHandler(job Job) {
 		if w.jobPool.log {
 			w.log(errorLog{logValue: err, jobValue: job.Value})
 		} else {
-			fmt.Printf("\nERROR IN PROCESSING HANDLER: %v\nJOB VALUE: %v\n", err, job.Value)
+			fmt.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, job.Value)
 		}
 	} else {
 		w.jobPool.jobCounterPool <- true
@@ -62,7 +63,7 @@ func (w *worker) start() {
 func (w *worker) log(log errorLog) {
 	defer func() {
 		if rec := recover(); rec != nil {
-			fmt.Println("Error while logging:\n", rec)
+			fmt.Printf("Error while logging: %v\n%v", rec, string(debug.Stack()))
 		}
 	}()
 	w.jobPool.logError(log)

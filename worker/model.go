@@ -19,7 +19,7 @@ type JobPool struct {
 	wg               sync.WaitGroup
 	workDisplay      bool
 	log              bool
-	logPath          string
+	LogPath          string
 	stackTrace       bool
 	errorFP          *os.File
 	workerPool       []*worker
