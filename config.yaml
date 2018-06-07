@@ -1,2 +1,2 @@
-logs:
+example:
   error_log: ERROR_LOG_PATH

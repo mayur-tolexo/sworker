@@ -22,7 +22,7 @@ func main() {
 	handler := PrintAll
 
 	//jobpool created
-	jp := worker.NewJobPool(10)
+	jp := worker.NewJobPool("example", 10)
 
 	//5 worker started
 	jp.StartWorker(2, handler)

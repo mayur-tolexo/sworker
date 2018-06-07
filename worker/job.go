@@ -8,18 +8,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rightjoin/aero/conf"
+	"github.com/tolexo/aero/conf"
 )
 
 //NewJobPool create new job pool
-func NewJobPool(bufferSize int, logPath ...string) *JobPool {
+func NewJobPool(tag string, bufferSize int) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 		log: true,
+		Tag: tag,
 	}
-	if len(logPath) > 0 {
-		jp.logPath = logPath[0]
-	}
+	jp.logPath = conf.String(tag+".error_log", "error_log")
 	if jp.log {
 		jp.initErrorLog()
 	}
@@ -160,11 +159,7 @@ func (jobPool *JobPool) KillWorker(n ...int) {
 func (jobPool *JobPool) initErrorLog() {
 	var fileErr error
 	sTime := time.Now()
-	path := conf.String("error_log", "logs.error_log")
-	if jobPool.logPath != "" {
-		path = jobPool.logPath
-	}
-	path = fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(path, ".log"),
+	path := fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(jobPool.logPath, ".log"),
 		sTime.Day(), sTime.Month(), sTime.Year())
 	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND,
 		0666); fileErr != nil {
