@@ -85,7 +85,8 @@ func (jobPool *JobPool) startCounter() {
 			case <-jobPool.jobCounterPool:
 				jobPool.jobCounter++
 				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
-					fmt.Printf("%d\tJOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter, time.Since(jobPool.startTime).Seconds())
+					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
+						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 				}
 			case <-jobPool.errorCounterPool:
 				jobPool.wErrorCounter++
