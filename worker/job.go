@@ -113,7 +113,7 @@ func (jobPool *JobPool) ErrorCount() int {
 
 //GetBufferSize return the job buffer count
 func (jobPool *JobPool) GetBufferSize() int {
-	return len(jobPool.job)
+	return cap(jobPool.job)
 }
 
 //ResetCounter will reset the job counter
