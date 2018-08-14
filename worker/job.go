@@ -39,6 +39,14 @@ func (jobPool *JobPool) Close() {
 	// jobPool.KillWorker(jobPool.WorkerCount())
 }
 
+//KClose the job pool and wait until all the jobs are completed
+//after complition will kill all routines
+func (jobPool *JobPool) KClose() {
+	close(jobPool.job)
+	jobPool.wg.Wait()
+	jobPool.KillWorker(jobPool.WorkerCount())
+}
+
 //SetWorkDisplay : enable or disable work display of worker
 func (jobPool *JobPool) SetWorkDisplay(wd bool) {
 	jobPool.workDisplay = wd

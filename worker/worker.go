@@ -19,6 +19,7 @@ func (w *worker) startHandler(job Job) {
 			} else {
 				fmt.Printf("\nPANIC RECOVERED:%v %v\n%v\nJOB VALUE: %v\n", w.jobPool.Tag, rec, string(debug.Stack()), jobValue)
 			}
+			w.jobPool.wg.Done()
 		}
 	}(job.Value)
 	if w.jobPool.workDisplay {
