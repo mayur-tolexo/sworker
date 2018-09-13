@@ -46,6 +46,7 @@ func (jobPool *JobPool) KClose() {
 	close(jobPool.job)
 	jobPool.wg.Wait()
 	jobPool.KillWorker(jobPool.WorkerCount())
+	jobPool.ticker.Stop()
 	// fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 	// 	jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 }
@@ -107,6 +108,7 @@ func (jobPool *JobPool) startCounter() {
 				if jobPool.lastPrint.Before(time.Now().Add(-5 * time.Second)) {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+					jobPool.lastPrint = time.Now()
 				}
 			default:
 			}
