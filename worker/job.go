@@ -50,7 +50,7 @@ func (jobPool *JobPool) KClose() {
 	if jobPool.lastPrintCount != jobPool.jobCounter {
 		fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 			jobPool.Tag, time.Since(jobPool.startTime).Seconds())
-		fmt.Printf("%s POOL CLOSED\n", jobPool.Tag)
+		fmt.Printf("--- %s POOL CLOSED ---\n", jobPool.Tag)
 	}
 }
 
