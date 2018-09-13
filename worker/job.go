@@ -44,7 +44,6 @@ func (jobPool *JobPool) Close() {
 //after complition will kill all routines
 func (jobPool *JobPool) KClose() {
 	close(jobPool.job)
-	fmt.Printf("--- CLOSING POOL %s ---\n", jobPool.Tag)
 	jobPool.wg.Wait()
 	jobPool.KillWorker(jobPool.WorkerCount())
 	jobPool.ticker.Stop()
