@@ -16,6 +16,8 @@ type JobPool struct {
 	errorCounterPool chan bool
 	batchSize        int
 	startTime        time.Time
+	lastPrint        time.Time
+	ticker           *time.Ticker
 	wg               sync.WaitGroup
 	workDisplay      bool
 	log              bool

@@ -14,6 +14,7 @@ func NewJobPool(bufferSize int) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 	}
+	jp.ticker = time.NewTicker(5 * time.Second)
 	return jp
 }
 
@@ -45,8 +46,8 @@ func (jobPool *JobPool) KClose() {
 	close(jobPool.job)
 	jobPool.wg.Wait()
 	jobPool.KillWorker(jobPool.WorkerCount())
-	fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
-		jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+	// fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
+	// 	jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 }
 
 //SetWorkDisplay : enable or disable work display of worker
@@ -72,6 +73,7 @@ func (jobPool *JobPool) SetStackTrace(st bool) {
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
 	jobPool.startTime = sTime
+	jobPool.lastPrint = sTime
 	jobPool.jobCounterPool = make(chan bool, noOfWorker)
 	jobPool.errorCounterPool = make(chan bool, noOfWorker)
 	jobPool.startCounter()
@@ -97,9 +99,15 @@ func (jobPool *JobPool) startCounter() {
 				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+					jobPool.lastPrint = time.Now()
 				}
 			case <-jobPool.errorCounterPool:
 				jobPool.wErrorCounter++
+			case <-jobPool.ticker.C:
+				if jobPool.lastPrint.Before(time.Now().Add(-5 * time.Second)) {
+					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
+						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+				}
 			default:
 			}
 		}
