@@ -47,8 +47,10 @@ func (jobPool *JobPool) KClose() {
 	jobPool.wg.Wait()
 	jobPool.KillWorker(jobPool.WorkerCount())
 	jobPool.ticker.Stop()
-	// fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
-	// 	jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+	if jobPool.lastPrintCount != jobPool.jobCounter {
+		fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
+			jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+	}
 }
 
 //SetWorkDisplay : enable or disable work display of worker
@@ -101,6 +103,7 @@ func (jobPool *JobPool) startCounter() {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.lastPrint = time.Now()
+					jobPool.lastPrintCount = jobPool.jobCounter
 				}
 			case <-jobPool.errorCounterPool:
 				jobPool.wErrorCounter++
@@ -109,6 +112,7 @@ func (jobPool *JobPool) startCounter() {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.lastPrint = time.Now()
+					jobPool.lastPrintCount = jobPool.jobCounter
 				}
 			default:
 			}

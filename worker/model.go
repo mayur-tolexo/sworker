@@ -17,6 +17,7 @@ type JobPool struct {
 	batchSize        int
 	startTime        time.Time
 	lastPrint        time.Time
+	lastPrintCount   int
 	ticker           *time.Ticker
 	wg               sync.WaitGroup
 	workDisplay      bool
