@@ -18,6 +18,7 @@ type JobPool struct {
 	startTime        time.Time
 	lastPrint        time.Time
 	lastPrintCount   int
+	slowDuration     time.Duration
 	ticker           *time.Ticker
 	wg               sync.WaitGroup
 	workDisplay      bool

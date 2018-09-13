@@ -14,7 +14,8 @@ func NewJobPool(bufferSize int) *JobPool {
 	jp := &JobPool{
 		job: make(chan Job, bufferSize),
 	}
-	jp.ticker = time.NewTicker(5 * time.Second)
+
+	jp.ticker = time.NewTicker(getSlowDuration(jp))
 	return jp
 }
 
@@ -73,6 +74,11 @@ func (jobPool *JobPool) SetStackTrace(st bool) {
 	jobPool.stackTrace = st
 }
 
+//SetSlowDuration : will set slow duration for job pool
+func (jobPool *JobPool) SetSlowDuration(d time.Duration) {
+	jobPool.slowDuration = d
+}
+
 //StartWorker : start worker
 func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
@@ -109,7 +115,7 @@ func (jobPool *JobPool) startCounter() {
 			case <-jobPool.errorCounterPool:
 				jobPool.wErrorCounter++
 			case <-jobPool.ticker.C:
-				if jobPool.lastPrint.Before(time.Now().Add(-5 * time.Second)) {
+				if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.lastPrint = time.Now()

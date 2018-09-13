@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"time"
 )
 
 //IfToI converts interface value to int
@@ -95,4 +96,12 @@ func IfToASlice(value []interface{}) []string {
 		floatVal[index] = IfToA(curValue)
 	}
 	return floatVal
+}
+
+func getSlowDuration(jobPool *JobPool) (duration time.Duration) {
+	duration = jobPool.slowDuration
+	if duration == 0 {
+		duration = 5 * time.Second
+	}
+	return
 }
