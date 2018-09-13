@@ -106,7 +106,7 @@ func (jobPool *JobPool) startCounter() {
 			select {
 			case <-jobPool.jobCounterPool:
 				jobPool.jobCounter++
-				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
+				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 && jobPool.jobCounter != jobPool.lastPrintCount {
 					fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.lastPrint = time.Now()
