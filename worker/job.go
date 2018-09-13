@@ -45,6 +45,8 @@ func (jobPool *JobPool) KClose() {
 	close(jobPool.job)
 	jobPool.wg.Wait()
 	jobPool.KillWorker(jobPool.WorkerCount())
+	fmt.Printf("%d\t%s JOBs DONE IN\t%.8f SEC\n", jobPool.jobCounter,
+		jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 }
 
 //SetWorkDisplay : enable or disable work display of worker
