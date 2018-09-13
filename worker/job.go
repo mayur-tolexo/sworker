@@ -44,8 +44,8 @@ func (jobPool *JobPool) Close() {
 //KClose the job pool and wait until all the jobs are completed
 //after complition will kill all routines
 func (jobPool *JobPool) KClose() {
-	close(jobPool.job)
 	jobPool.wg.Wait()
+	close(jobPool.job)
 	jobPool.KillWorker(jobPool.WorkerCount())
 	jobPool.ticker.Stop()
 	if jobPool.lastPrintCount != jobPool.jobCounter {
