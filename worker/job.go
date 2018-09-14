@@ -46,12 +46,13 @@ func (jobPool *JobPool) Close() {
 func (jobPool *JobPool) KClose() {
 	jobPool.wg.Wait()
 	close(jobPool.job)
+	jobPool.Closed = true
 	jobPool.KillWorker(jobPool.WorkerCount())
 	jobPool.ticker.Stop()
 	if jobPool.lastPrintCount != jobPool.jobCounter {
 		fmt.Printf("%d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
 			jobPool.Tag, time.Since(jobPool.startTime).Seconds())
-		fmt.Printf("--- %s POOL CLOSED ---\n", jobPool.Tag)
+		fmt.Printf("--- %s POOL CLOSED ---\n\n", jobPool.Tag)
 	}
 }
 
@@ -105,6 +106,9 @@ func (jobPool *JobPool) startCounter() {
 		for {
 			select {
 			case <-jobPool.jobCounterPool:
+				if jobPool.Closed {
+					return
+				}
 				jobPool.jobCounter++
 				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
 					if jobPool.jobCounter != jobPool.lastPrintCount {
@@ -115,17 +119,24 @@ func (jobPool *JobPool) startCounter() {
 					jobPool.lastPrintCount = jobPool.jobCounter
 				}
 			case <-jobPool.errorCounterPool:
+				if jobPool.Closed {
+					return
+				}
 				jobPool.wErrorCounter++
 			case <-jobPool.ticker.C:
-				if jobPool.jobCounter != jobPool.lastPrintCount {
-					if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
-						fmt.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
-							jobPool.Tag, time.Since(jobPool.startTime).Seconds())
-					}
+				if jobPool.Closed {
+					return
+				}
+				if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
+					fmt.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
+						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 				}
 				jobPool.lastPrint = time.Now()
 				jobPool.lastPrintCount = jobPool.jobCounter
 			default:
+				if jobPool.Closed {
+					return
+				}
 			}
 		}
 	}()

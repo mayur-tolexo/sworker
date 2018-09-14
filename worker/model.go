@@ -27,6 +27,7 @@ type JobPool struct {
 	stackTrace       bool
 	errorFP          *os.File
 	workerPool       []*worker
+	Closed           bool
 }
 
 //errorLog model
