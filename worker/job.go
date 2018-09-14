@@ -21,11 +21,11 @@ func NewJobPool(bufferSize int) *JobPool {
 
 //AddJob new job in job pool
 func (jobPool *JobPool) AddJob(value ...interface{}) {
+	jobPool.wg.Add(1)
 	jobPool.job <- Job{
 		Runtime: time.Now(),
 		Value:   value,
 	}
-	jobPool.wg.Add(1)
 }
 
 //CurrentBuffSize returns the current data size in buffer
