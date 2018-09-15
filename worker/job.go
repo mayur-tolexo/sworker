@@ -131,6 +131,7 @@ func (jobPool *JobPool) startCounter() {
 					fmt.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.Stats()
+					jobPool.WorkerJobs()
 				}
 				jobPool.lastPrint = time.Now()
 				jobPool.lastPrintCount = jobPool.jobCounter
@@ -141,6 +142,16 @@ func (jobPool *JobPool) startCounter() {
 			}
 		}
 	}()
+}
+
+//WorkerJobs will print worker current jobs
+func (jobPool *JobPool) WorkerJobs() {
+	for _, w := range jobPool.workerPool {
+		if w.isIdle == false {
+			fmt.Printf("JOB VALUE: %v\n", w.Value)
+		}
+	}
+	fmt.Println()
 }
 
 //Stats will print cur stats

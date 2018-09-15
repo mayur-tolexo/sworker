@@ -51,4 +51,6 @@ type worker struct {
 	jobPool  *JobPool
 	quit     chan int
 	handler  Handler
+	Value    []interface{}
+	isIdle   bool
 }
