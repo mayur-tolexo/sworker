@@ -10,6 +10,7 @@ import (
 type JobPool struct {
 	Tag              string
 	job              chan Job
+	total            int
 	jobCounter       int
 	wErrorCounter    int
 	jobCounterPool   chan bool

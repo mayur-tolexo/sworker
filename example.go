@@ -10,6 +10,7 @@ import (
 //PrintAll : function which worker will call to execute
 func PrintAll(value ...interface{}) error {
 	fmt.Println(value)
+	time.Sleep(20 * time.Second)
 	return nil
 }
 
@@ -23,6 +24,7 @@ func main() {
 
 	//jobpool created
 	jp := worker.NewJobPool(10)
+	jp.SetSlowDuration(5 * time.Second)
 
 	//5 worker started
 	jp.StartWorker(2, handler)
@@ -31,7 +33,7 @@ func main() {
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")
 	jp.AddJob(1001)
-	jp.KillWorker()
+	// jp.KillWorker()
 
 	for i := 0; i < 5; i++ {
 		jp.AddJob(i)

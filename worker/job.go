@@ -22,6 +22,7 @@ func NewJobPool(bufferSize int) *JobPool {
 //AddJob new job in job pool
 func (jobPool *JobPool) AddJob(value ...interface{}) {
 	jobPool.wg.Add(1)
+	jobPool.total++
 	jobPool.job <- Job{
 		Runtime: time.Now(),
 		Value:   value,
@@ -78,6 +79,7 @@ func (jobPool *JobPool) SetStackTrace(st bool) {
 //SetSlowDuration : will set slow duration for job pool
 func (jobPool *JobPool) SetSlowDuration(d time.Duration) {
 	jobPool.slowDuration = d
+	jobPool.ticker = time.NewTicker(getSlowDuration(jobPool))
 }
 
 //StartWorker : start worker
@@ -166,8 +168,8 @@ func (jobPool *JobPool) Stats() {
 			count++
 		}
 	}
-	fmt.Printf("%v STATS: PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
-		jobPool.Tag, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
+	fmt.Printf("%v STATS - JOB: %d PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
+		jobPool.Tag, jobPool.total, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
 }
 
 //GetWorkers return the worker of the current jobpool
