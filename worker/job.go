@@ -148,7 +148,7 @@ func (jobPool *JobPool) startCounter() {
 func (jobPool *JobPool) WorkerJobs() {
 	for _, w := range jobPool.workerPool {
 		if w.isIdle == false {
-			fmt.Printf("JOB VALUE: %v\n", w.Value)
+			fmt.Printf("JOB VALUE: %v\n", w.job.Value)
 		}
 	}
 	fmt.Println()

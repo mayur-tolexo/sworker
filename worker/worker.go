@@ -10,7 +10,7 @@ import (
 func (w *worker) startHandler(job Job) {
 	w.isIdle = false
 	defer w.jobPool.wg.Done()
-	w.Value = job.Value
+	w.job = job
 
 	sTime := time.Now()
 	defer func(jobValue interface{}) {
@@ -24,17 +24,17 @@ func (w *worker) startHandler(job Job) {
 			}
 			w.jobPool.wg.Done()
 		}
-	}(w.Value)
+	}(w.job.Value)
 	if w.jobPool.workDisplay {
 		fmt.Printf("worker: %d STARTED at %v:%v:%v\n", w.workerID,
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
-	if err := w.handler(w.Value...); err != nil {
+	if err := w.handler(w.job.Value...); err != nil {
 		w.jobPool.errorCounterPool <- true
 		if w.jobPool.log {
-			w.log(errorLog{logValue: err, jobValue: w.Value})
+			w.log(errorLog{logValue: err, jobValue: w.job.Value})
 		} else {
-			fmt.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.Value)
+			fmt.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.job.Value)
 			w.jobPool.Stats()
 		}
 	} else {
