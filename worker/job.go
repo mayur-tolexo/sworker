@@ -146,18 +146,28 @@ func (jobPool *JobPool) startCounter() {
 
 //WorkerJobs will print worker current jobs
 func (jobPool *JobPool) WorkerJobs() {
+	count := 0
 	for _, w := range jobPool.workerPool {
 		if w.isIdle == false {
+			count++
 			fmt.Printf("JOB VALUE: %v\n", w.job.Value)
 		}
 	}
-	fmt.Println()
+	if count > 0 {
+		fmt.Println()
+	}
 }
 
 //Stats will print cur stats
 func (jobPool *JobPool) Stats() {
-	fmt.Printf("%v STATS: PENDING: %d PROCESSED: %d ERROR: %d\n",
-		jobPool.Tag, len(jobPool.job), jobPool.jobCounter, jobPool.wErrorCounter)
+	count := 0
+	for _, w := range jobPool.workerPool {
+		if w.isIdle == false {
+			count++
+		}
+	}
+	fmt.Printf("%v STATS: PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
+		jobPool.Tag, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
 }
 
 //GetWorkers return the worker of the current jobpool
