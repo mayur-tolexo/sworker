@@ -32,6 +32,7 @@ func (w *worker) startHandler(job Job) {
 			w.log(errorLog{logValue: err, jobValue: job.Value})
 		} else {
 			fmt.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, job.Value)
+			w.jobPool.Stats()
 		}
 	} else {
 		w.jobPool.jobCounterPool <- true
