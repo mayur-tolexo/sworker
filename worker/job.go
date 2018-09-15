@@ -130,6 +130,8 @@ func (jobPool *JobPool) startCounter() {
 				if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
 					fmt.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
+					fmt.Printf("%v Stats: Pending: %d Processed: %d Error: %d\n",
+						jobPool.Tag, len(jobPool.job), jobPool.jobCounter, jobPool.wErrorCounter)
 				}
 				jobPool.lastPrint = time.Now()
 				jobPool.lastPrintCount = jobPool.jobCounter
