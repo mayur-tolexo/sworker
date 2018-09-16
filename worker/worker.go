@@ -8,8 +8,11 @@ import (
 
 //startHandler : call handler of the current worker
 func (w *worker) startHandler(job Job) {
-	w.isIdle = false
 	defer w.jobPool.wg.Done()
+	if len(job.Value) == 0 {
+		return
+	}
+	w.isIdle = false
 	w.job = job
 
 	sTime := time.Now()
