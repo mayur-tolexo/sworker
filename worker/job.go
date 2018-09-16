@@ -218,8 +218,8 @@ func (jobPool *JobPool) KillWorker(n ...int) {
 		killCount = n[0]
 	}
 	total := jobPool.WorkerCount()
-	if (total - 1) < killCount {
-		killCount = total - 1
+	if killCount > total {
+		killCount = total
 	}
 	count := 0
 	for workerID, w := range jobPool.workerPool {
@@ -228,7 +228,7 @@ func (jobPool *JobPool) KillWorker(n ...int) {
 		}
 		w.quit <- 1
 		delete(jobPool.workerPool, workerID)
-		fmt.Println("killed", workerID)
+		// fmt.Println("killed Worker", workerID)
 		count++
 	}
 	// for i := 0; i < killCount; i++ {
