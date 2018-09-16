@@ -152,7 +152,7 @@ func (jobPool *JobPool) WorkerJobs() {
 	for _, w := range jobPool.workerPool {
 		if w.isIdle == false {
 			count++
-			fmt.Printf("JOB VALUE: %v\n", w.job.Value)
+			fmt.Printf("%v JOB VALUE: %v\n", w.jobPool.Tag, w.job.Value)
 		}
 	}
 	if count > 0 {
