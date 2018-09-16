@@ -27,7 +27,7 @@ type JobPool struct {
 	LogPath          string
 	stackTrace       bool
 	errorFP          *os.File
-	workerPool       []*worker
+	workerPool       map[int]*worker
 	Closed           bool
 }
 

@@ -33,7 +33,7 @@ func main() {
 	jp.AddJob("Hello", "Mayur")
 	jp.AddJob("World")
 	jp.AddJob(1001)
-	// jp.KillWorker()
+	jp.KillWorker()
 
 	for i := 0; i < 5; i++ {
 		jp.AddJob(i)

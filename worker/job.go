@@ -12,7 +12,8 @@ import (
 //NewJobPool create new job pool
 func NewJobPool(bufferSize int) *JobPool {
 	jp := &JobPool{
-		job: make(chan Job, bufferSize),
+		job:        make(chan Job, bufferSize),
+		workerPool: make(map[int]*worker),
 	}
 
 	jp.ticker = time.NewTicker(getSlowDuration(jp))
@@ -98,7 +99,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 			quit:     make(chan int, 2),
 			handler:  handler,
 		}
-		jobPool.workerPool = append(jobPool.workerPool, w)
+		jobPool.workerPool[w.workerID] = w
 		w.start()
 	}
 }
@@ -163,17 +164,19 @@ func (jobPool *JobPool) WorkerJobs() {
 //Stats will print cur stats
 func (jobPool *JobPool) Stats() {
 	count := 0
+	wCount := 0
 	for _, w := range jobPool.workerPool {
+		wCount++
 		if w.isIdle == false {
 			count++
 		}
 	}
-	fmt.Printf("%v STATS - JOB: %d PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
-		jobPool.Tag, jobPool.total, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
+	fmt.Printf("%v STATS - WORKER %d JOB: %d PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
+		jobPool.Tag, wCount, jobPool.total, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
 }
 
 //GetWorkers return the worker of the current jobpool
-func (jobPool *JobPool) GetWorkers() []*worker {
+func (jobPool *JobPool) GetWorkers() map[int]*worker {
 	return jobPool.workerPool
 }
 
@@ -218,14 +221,24 @@ func (jobPool *JobPool) KillWorker(n ...int) {
 	if (total - 1) < killCount {
 		killCount = total - 1
 	}
-	for i := 0; i < killCount; i++ {
-		jobPool.workerPool[i].quit <- 1
+	count := 0
+	for workerID, w := range jobPool.workerPool {
+		if count == killCount {
+			break
+		}
+		w.quit <- 1
+		delete(jobPool.workerPool, workerID)
+		fmt.Println("killed", workerID)
+		count++
 	}
-	if killCount == total {
-		jobPool.workerPool = nil
-	} else {
-		jobPool.workerPool = jobPool.workerPool[killCount:]
-	}
+	// for i := 0; i < killCount; i++ {
+	// 	jobPool.workerPool[i].quit <- 1
+	// }
+	// if killCount == total {
+	// 	jobPool.workerPool = nil
+	// } else {
+	// 	jobPool.workerPool = jobPool.workerPool[killCount:]
+	// }
 }
 
 //initErrorLog will initialize logger
