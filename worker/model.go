@@ -48,10 +48,10 @@ type Handler func(value ...interface{}) error
 
 //worker model
 type worker struct {
-	workerID int
-	jobPool  *JobPool
-	quit     chan int
-	handler  Handler
-	job      Job
-	isIdle   bool
+	workerID  int
+	jobPool   *JobPool
+	quit      chan int
+	handler   Handler
+	job       Job
+	inProcess bool
 }

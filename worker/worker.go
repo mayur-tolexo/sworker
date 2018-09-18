@@ -12,12 +12,12 @@ func (w *worker) startHandler(job Job) {
 	if len(job.Value) == 0 {
 		return
 	}
-	w.isIdle = false
+	w.inProcess = true
 	w.job = job
 
 	sTime := time.Now()
 	defer func(jobValue interface{}) {
-		w.isIdle = true
+		w.inProcess = false
 		if rec := recover(); rec != nil {
 			w.jobPool.errorCounterPool <- true
 			if w.jobPool.log {

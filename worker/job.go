@@ -151,7 +151,7 @@ func (jobPool *JobPool) startCounter() {
 func (jobPool *JobPool) WorkerJobs() {
 	count := 0
 	for _, w := range jobPool.workerPool {
-		if w.isIdle == false {
+		if w.inProcess {
 			count++
 			fmt.Printf("%v JOB VALUE: %v\n", w.jobPool.Tag, w.job.Value)
 		}
@@ -167,7 +167,7 @@ func (jobPool *JobPool) Stats() {
 	wCount := 0
 	for _, w := range jobPool.workerPool {
 		wCount++
-		if w.isIdle == false {
+		if w.inProcess {
 			count++
 		}
 	}
