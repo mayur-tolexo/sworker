@@ -149,16 +149,12 @@ func (jobPool *JobPool) startCounter() {
 
 //WorkerJobs will print worker current jobs
 func (jobPool *JobPool) WorkerJobs() {
-	count := 0
 	for _, w := range jobPool.workerPool {
 		if w.inProcess {
-			count++
 			fmt.Printf("%v JOB VALUE: %v\n", w.jobPool.Tag, w.job.Value)
 		}
 	}
-	if count > 0 {
-		fmt.Println()
-	}
+	fmt.Println()
 }
 
 //Stats will print cur stats
