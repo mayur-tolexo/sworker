@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"runtime/debug"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 //startHandler : call handler of the current worker
@@ -16,6 +18,7 @@ func (w *worker) startHandler(job Job) {
 	w.job = job
 
 	sTime := time.Now()
+	d := color.New(color.FgHiRed)
 	defer func(jobValue interface{}) {
 		w.inProcess = false
 		if rec := recover(); rec != nil {
@@ -23,7 +26,7 @@ func (w *worker) startHandler(job Job) {
 			if w.jobPool.log {
 				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
-				fmt.Printf("\nPANIC RECOVERED:%v %v\n%v\nJOB VALUE: %v\n", w.jobPool.Tag, rec, string(debug.Stack()), jobValue)
+				d.Printf("\nPANIC RECOVERED:%v %v\n%v\nJOB VALUE: %v\n", w.jobPool.Tag, rec, string(debug.Stack()), jobValue)
 			}
 		}
 	}(w.job.Value)
@@ -36,7 +39,7 @@ func (w *worker) startHandler(job Job) {
 		if w.jobPool.log {
 			w.log(errorLog{logValue: err, jobValue: w.job.Value})
 		} else {
-			fmt.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.job.Value)
+			d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.job.Value)
 			// w.jobPool.Stats()
 		}
 	} else {
