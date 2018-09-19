@@ -101,7 +101,7 @@ func IfToASlice(value []interface{}) []string {
 func getSlowDuration(jobPool *JobPool) (duration time.Duration) {
 	duration = jobPool.slowDuration
 	if duration == 0 {
-		duration = 60 * time.Second
+		duration = 90 * time.Second
 	}
 	return
 }
