@@ -1,72 +1,29 @@
 {
 	"ImportPath": "github.com/mayur-tolexo/sworker",
-	"GoVersion": "go1.8",
-	"GodepVersion": "v79",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v80",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/BurntSushi/toml",
-			"Comment": "v0.3.0-7-ga368813",
-			"Rev": "a368813c5e648fee92e5f6c30e3944ff9d5e8895"
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v1.7.0-2-g2d68451",
+			"Rev": "2d684516a8861da43017284349b7e303e809ac21"
 		},
 		{
-			"ImportPath": "github.com/jacobstr/confer",
-			"Comment": "0.1.0-7-g9a227d3",
-			"Rev": "9a227d38758a4f48761c1b9d295f55f0dc5c2bcf"
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.9-6-gad5389d",
+			"Rev": "ad5389df28cdac544c99bd7b9161a0b5b6ca9d1b"
 		},
 		{
-			"ImportPath": "github.com/jacobstr/confer/errors",
-			"Comment": "0.1.0-7-g9a227d3",
-			"Rev": "9a227d38758a4f48761c1b9d295f55f0dc5c2bcf"
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.2",
+			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
 		},
 		{
-			"ImportPath": "github.com/jacobstr/confer/maps",
-			"Comment": "0.1.0-7-g9a227d3",
-			"Rev": "9a227d38758a4f48761c1b9d295f55f0dc5c2bcf"
-		},
-		{
-			"ImportPath": "github.com/jacobstr/confer/reader",
-			"Comment": "0.1.0-7-g9a227d3",
-			"Rev": "9a227d38758a4f48761c1b9d295f55f0dc5c2bcf"
-		},
-		{
-			"ImportPath": "github.com/jacobstr/confer/source",
-			"Comment": "0.1.0-7-g9a227d3",
-			"Rev": "9a227d38758a4f48761c1b9d295f55f0dc5c2bcf"
-		},
-		{
-			"ImportPath": "github.com/kr/pretty",
-			"Comment": "go.weekly.2011-12-22-36-gcfb55aa",
-			"Rev": "cfb55aafdaf3ec08f0db22699ab822c50091b1c4"
-		},
-		{
-			"ImportPath": "github.com/kr/text",
-			"Rev": "7cafcd837844e784b526369c9bce262804aebc60"
-		},
-		{
-			"ImportPath": "github.com/rightjoin/aero/conf",
-			"Rev": "83aa79b7b4d25463fe80f65274679ef48c8fb513"
-		},
-		{
-			"ImportPath": "github.com/serenize/snaker",
-			"Rev": "1c7f65329f6524115af8ca01ab604c00cddf5558"
-		},
-		{
-			"ImportPath": "github.com/spf13/cast",
-			"Comment": "v1.1.0",
-			"Rev": "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
-		},
-		{
-			"ImportPath": "github.com/spf13/jwalterweatherman",
-			"Rev": "0efa5202c04663c757d84f90f5219c1250baf94f"
-		},
-		{
-			"ImportPath": "github.com/spf13/pflag",
-			"Comment": "v1.0.0",
-			"Rev": "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
-		},
-		{
-			"ImportPath": "gopkg.in/yaml.v2",
-			"Rev": "3b4ad1db5b2a649883ff3782f5f9f6fb52be71af"
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "07c182904dbd53199946ba614a412c61d3c548f5"
 		}
 	]
 }
