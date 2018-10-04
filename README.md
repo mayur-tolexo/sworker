@@ -1,7 +1,7 @@
 [![Godocs](https://img.shields.io/badge/golang-documentation-blue.svg)](https://www.godoc.org/github.com/mayur-tolexo/sworker/worker)
 
 # sworker
-Easy worker setup for your code.  
+Easy worker setup for your code.
 Checkout NSQ repo for msg queuing *-* [drift](https://github.com/mayur-tolexo/drift)
 
 # install
