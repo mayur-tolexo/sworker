@@ -4,12 +4,12 @@
 Easy worker setup for your code.
 Checkout NSQ repo for msg queuing *-* [drift](https://github.com/mayur-tolexo/drift)
 
-# install
+### install
 ```
 go get github.com/mayur-tolexo/sworker/worker
 ```
 
-# Handler
+### Handler
 ```
 handler is a function to which the worker will call.
 
@@ -19,7 +19,7 @@ func(value ...interface{}) error
 Here PrintAll is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
 ```
 
-# Example
+### Example
 ```
 
 //PrintAll : function which worker will call to execute
@@ -49,32 +49,32 @@ func main() {
 	jp.Close()
 }
 ```
-# SetStackTrace
+### SetStackTrace
 ```
   To log complete stacktrace of the error
   By default it's false but to activate it
   jp.SetStackTrace(true)
 ```
-# SetLogger
+### SetLogger
 ```
   To log all error
   By default it's true but to deactivate it
   jb.SetLogger(false)
 ``` 
-# SetWorkDisplay
+### SetWorkDisplay
 ```
   To Print worker start time and end time while processing handler
   By default it's false but to activate it
   jb.SetWorkDisplay(true)
 ```
 
-# To change error log path
+### To change error log path
 ```
 create config.yaml file in package
 add field logs: error_logs: YOUR_ERROR_PATH (as mentioned in config.yaml file in this repo)
 ```
 
-# Worker inside worker example
+### Worker inside worker example
 ```
 //ChildHandler : second handler
 func ChildHandler(value ...interface{}) error {
