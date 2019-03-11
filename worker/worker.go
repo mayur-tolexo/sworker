@@ -56,8 +56,8 @@ func (w *worker) start() {
 	loop:
 		for {
 			select {
-			case job, closed := <-w.jobPool.job:
-				if closed {
+			case job, open := <-w.jobPool.job:
+				if open == false {
 					break loop
 				}
 				var quit bool
