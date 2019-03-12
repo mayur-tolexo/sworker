@@ -53,9 +53,10 @@ func (jobPool *JobPool) KClose() {
 	jobPool.Closed = true
 	jobPool.KillWorker(jobPool.WorkerCount())
 	jobPool.ticker.Stop()
-	if jobPool.lastPrintCount != jobPool.jobCounter {
+	jobPool.counterWG.Wait()
+	if jobPool.lastPrintCount != jobPool.successCounter {
 		d := color.New(color.FgGreen, color.Bold)
-		d.Printf("%d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
+		d.Printf("%d %s JOBs DONE IN %.8f SEC\n", jobPool.successCounter,
 			jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 		d.Printf("--- %s POOL CLOSED ---\n\n", jobPool.Tag)
 	}
@@ -91,7 +92,7 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	sTime := time.Now()
 	jobPool.startTime = sTime
 	jobPool.lastPrint = sTime
-	jobPool.jobCounterPool = make(chan bool, noOfWorker)
+	jobPool.sCounterPool = make(chan bool, noOfWorker)
 	jobPool.errorCounterPool = make(chan bool, noOfWorker)
 	jobPool.startCounter()
 
@@ -109,20 +110,22 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 
 func (jobPool *JobPool) startCounter() {
 	go func() {
+		jobPool.counterWG.Add(1)
+		defer jobPool.counterWG.Done()
 		for {
 			select {
-			case <-jobPool.jobCounterPool:
+			case <-jobPool.sCounterPool:
 				if jobPool.Closed {
 					return
 				}
-				jobPool.jobCounter++
-				if jobPool.batchSize != 0 && jobPool.jobCounter%jobPool.batchSize == 0 {
-					if jobPool.jobCounter != jobPool.lastPrintCount {
-						fmt.Printf("%d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
+				jobPool.successCounter++
+				if jobPool.batchSize != 0 && jobPool.successCounter%jobPool.batchSize == 0 {
+					if jobPool.successCounter != jobPool.lastPrintCount {
+						fmt.Printf("%d %s JOBs DONE IN %.8f SEC\n", jobPool.successCounter,
 							jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					}
 					jobPool.lastPrint = time.Now()
-					jobPool.lastPrintCount = jobPool.jobCounter
+					jobPool.lastPrintCount = jobPool.successCounter
 				}
 			case <-jobPool.errorCounterPool:
 				if jobPool.Closed {
@@ -135,13 +138,13 @@ func (jobPool *JobPool) startCounter() {
 				}
 				if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
 					d := color.New(color.FgHiBlue, color.Bold)
-					d.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.jobCounter,
+					d.Printf("SLOW PROFILER - %d %s JOBs DONE IN %.8f SEC\n", jobPool.successCounter,
 						jobPool.Tag, time.Since(jobPool.startTime).Seconds())
 					jobPool.Stats()
 					jobPool.WorkerJobs()
 				}
 				jobPool.lastPrint = time.Now()
-				jobPool.lastPrintCount = jobPool.jobCounter
+				jobPool.lastPrintCount = jobPool.successCounter
 			default:
 				if jobPool.Closed {
 					return
@@ -172,7 +175,7 @@ func (jobPool *JobPool) Stats() {
 		}
 	}
 	fmt.Printf("%v STATS - WORKER %d JOB: %d PENDING: %d IN-PROCESS: %d PROCESSED: %d ERROR: %d\n",
-		jobPool.Tag, wCount, jobPool.total, len(jobPool.job), count, jobPool.jobCounter, jobPool.wErrorCounter)
+		jobPool.Tag, wCount, jobPool.total, len(jobPool.job), count, jobPool.successCounter, jobPool.wErrorCounter)
 }
 
 //GetWorkers return the worker of the current jobpool
@@ -182,7 +185,7 @@ func (jobPool *JobPool) GetWorkers() map[int]*worker {
 
 //SuccessCount return the successful job count
 func (jobPool *JobPool) SuccessCount() int {
-	return jobPool.jobCounter
+	return jobPool.successCounter
 }
 
 //ErrorCount return the worker error count
@@ -197,7 +200,7 @@ func (jobPool *JobPool) GetBufferSize() int {
 
 //ResetCounter will reset the job counter
 func (jobPool *JobPool) ResetCounter() {
-	jobPool.jobCounter = 0
+	jobPool.successCounter = 0
 	jobPool.wErrorCounter = 0
 }
 

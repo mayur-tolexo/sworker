@@ -11,9 +11,10 @@ type JobPool struct {
 	Tag              string
 	job              chan Job
 	total            int
-	jobCounter       int
+	successCounter   int
+	counterWG        sync.WaitGroup
 	wErrorCounter    int
-	jobCounterPool   chan bool
+	sCounterPool     chan bool
 	errorCounterPool chan bool
 	batchSize        int
 	startTime        time.Time

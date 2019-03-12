@@ -43,7 +43,7 @@ func (w *worker) startHandler(job Job) {
 			// w.jobPool.Stats()
 		}
 	} else {
-		w.jobPool.jobCounterPool <- true
+		w.jobPool.sCounterPool <- true
 	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
