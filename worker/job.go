@@ -124,14 +124,8 @@ func (jobPool *JobPool) startCounter() {
 					jobPool.lastPrint = time.Now()
 					jobPool.lastPrintCount = jobPool.successCounter
 				}
-				if jobPool.Closed {
-					return
-				}
 			case <-jobPool.errorCounterPool:
 				jobPool.wErrorCounter++
-				if jobPool.Closed {
-					return
-				}
 			case <-jobPool.ticker.C:
 				if jobPool.lastPrint.Before(time.Now().Add(-1 * getSlowDuration(jobPool))) {
 					d := color.New(color.FgHiBlue, color.Bold)
@@ -142,9 +136,6 @@ func (jobPool *JobPool) startCounter() {
 				}
 				jobPool.lastPrint = time.Now()
 				jobPool.lastPrintCount = jobPool.successCounter
-				if jobPool.Closed {
-					return
-				}
 			default:
 				if jobPool.Closed {
 					return
