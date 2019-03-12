@@ -22,7 +22,7 @@ func (w *worker) startHandler(job Job) {
 	defer func(jobValue interface{}) {
 		w.inProcess = false
 		if rec := recover(); rec != nil {
-			w.jobPool.errorCounterPool <- true
+			w.jobPool.ecPool <- true
 			if w.jobPool.log {
 				w.log(errorLog{logValue: rec, jobValue: jobValue})
 			} else {
@@ -35,7 +35,7 @@ func (w *worker) startHandler(job Job) {
 			sTime.Hour(), sTime.Minute(), sTime.Second())
 	}
 	if err := w.handler(w.job.Value...); err != nil {
-		w.jobPool.errorCounterPool <- true
+		w.jobPool.ecPool <- true
 		if w.jobPool.log {
 			w.log(errorLog{logValue: err, jobValue: w.job.Value})
 		} else {
@@ -43,7 +43,7 @@ func (w *worker) startHandler(job Job) {
 			// w.jobPool.Stats()
 		}
 	} else {
-		w.jobPool.sCounterPool <- true
+		w.jobPool.scPool <- true
 	}
 	if w.jobPool.workDisplay {
 		fmt.Printf("worker: %d END in %v SEC\n\n", w.workerID, time.Since(sTime).Seconds())
