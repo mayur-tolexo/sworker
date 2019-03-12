@@ -27,7 +27,7 @@ func main() {
 	jp.SetSlowDuration(5 * time.Second)
 
 	//5 worker started
-	jp.StartWorker(2, handler)
+	jp.StartWorker(5, handler)
 
 	//job added in jobpool
 	jp.AddJob("Hello", "Mayur")
