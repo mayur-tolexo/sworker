@@ -30,6 +30,7 @@ type JobPool struct {
 	errorFP        *os.File
 	workerPool     map[int]*worker
 	Closed         bool
+	handler        Handler
 }
 
 //errorLog model

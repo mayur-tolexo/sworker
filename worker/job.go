@@ -95,13 +95,19 @@ func (jobPool *JobPool) StartWorker(noOfWorker int, handler Handler) {
 	jobPool.scPool = make(chan bool, noOfWorker)
 	jobPool.ecPool = make(chan bool, noOfWorker)
 	jobPool.startCounter()
+	jobPool.handler = handler
+	jobPool.AddWorker(noOfWorker)
+}
 
+//AddWorker will add worker in job pool default handler
+func (jobPool *JobPool) AddWorker(noOfWorker int) {
 	for i := 1; i <= noOfWorker; i++ {
+		sTime := time.Now()
 		w := &worker{
 			workerID: i + sTime.Nanosecond(),
 			jobPool:  jobPool,
 			quit:     make(chan int, 2),
-			handler:  handler,
+			handler:  jobPool.handler,
 		}
 		jobPool.workerPool[w.workerID] = w
 		w.start()
