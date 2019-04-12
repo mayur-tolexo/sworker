@@ -76,6 +76,11 @@ func (jobPool *JobPool) SetLogger(log bool, path string) {
 	}
 }
 
+//Logger will set logger
+func (jobPool *JobPool) Logger(lg Logger) {
+	jobPool.logger = lg
+}
+
 //SetStackTrace : enable or disable error stackTrace
 func (jobPool *JobPool) SetStackTrace(st bool) {
 	jobPool.stackTrace = st
