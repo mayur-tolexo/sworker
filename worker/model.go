@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+//Logger will be called if error occured
+type Logger interface {
+	Print(jp *JobPool, job interface{}, err interface{})
+}
+
 //JobPool contain job pool and wait group
 type JobPool struct {
 	Tag            string
@@ -31,6 +36,7 @@ type JobPool struct {
 	workerPool     map[int]*worker
 	Closed         bool
 	handler        Handler
+	logger         Logger
 }
 
 //errorLog model

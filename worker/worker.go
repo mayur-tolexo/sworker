@@ -24,7 +24,11 @@ func (w *worker) startHandler(job Job) {
 		if rec := recover(); rec != nil {
 			w.jobPool.ecPool <- true
 			if w.jobPool.log {
-				w.log(errorLog{logValue: rec, jobValue: jobValue})
+				if w.jobPool.logger != nil {
+					w.jobPool.logger.Print(w.jobPool, jobValue, rec)
+				} else {
+					w.log(errorLog{logValue: rec, jobValue: jobValue})
+				}
 			} else {
 				d.Printf("\nPANIC RECOVERED:%v %v\n%v\nJOB VALUE: %v\n", w.jobPool.Tag, rec, string(debug.Stack()), jobValue)
 			}
@@ -37,7 +41,11 @@ func (w *worker) startHandler(job Job) {
 	if err := w.handler(w.job.Value...); err != nil {
 		w.jobPool.ecPool <- true
 		if w.jobPool.log {
-			w.log(errorLog{logValue: err, jobValue: w.job.Value})
+			if w.jobPool.logger != nil {
+				w.jobPool.logger.Print(w.jobPool, w.job.Value, err)
+			} else {
+				w.log(errorLog{logValue: err, jobValue: w.job.Value})
+			}
 		} else {
 			d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.job.Value)
 			// w.jobPool.Stats()
