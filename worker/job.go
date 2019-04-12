@@ -241,8 +241,7 @@ func (jobPool *JobPool) initErrorLog() {
 	}
 	path := fmt.Sprintf("%s_%d-%d-%d.log", strings.TrimSuffix(jobPool.LogPath, ".log"),
 		sTime.Day(), sTime.Month(), sTime.Year())
-	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND,
-		0666); fileErr != nil {
+	if jobPool.errorFP, fileErr = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666); fileErr != nil {
 		fmt.Println("Couldn't able to create the error log file", fileErr.Error())
 	}
 }
@@ -250,7 +249,9 @@ func (jobPool *JobPool) initErrorLog() {
 //logError will log given error
 func (jobPool *JobPool) logError(err errorLog) {
 	logger := log.New(jobPool.errorFP, "\n", 2)
-	if jobPool.stackTrace {
+	if jobPool.logger != nil {
+		jobPool.logger.Print(jobPool, err.jobValue, err.logValue)
+	} else if jobPool.stackTrace {
 		logger.Printf("\nERROR:%v %v\nJOB VALUE: %v\nSTACK TRACE:\n%v", jobPool.Tag, err.logValue, err.jobValue,
 			string(debug.Stack()))
 	} else {
