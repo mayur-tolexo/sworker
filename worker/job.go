@@ -78,6 +78,7 @@ func (jobPool *JobPool) SetLogger(log bool, path string) {
 
 //Logger will set logger
 func (jobPool *JobPool) Logger(lg Logger) {
+	jobPool.log = true
 	jobPool.logger = lg
 }
 
