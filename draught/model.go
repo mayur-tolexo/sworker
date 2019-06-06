@@ -30,6 +30,7 @@ type Pool struct {
 	totalCount   int
 	counterPool  chan int // 0:error 1:success 2:retry 3:total
 	exponent     float64  //retry exponent
+	closed       bool
 }
 
 //Worker will perform the job
@@ -40,6 +41,7 @@ type Worker struct {
 	job     workerJob          //current job
 	ctx     context.Context    //each worker context
 	cancel  context.CancelFunc //context cancel function
+	working bool               //flag to check worker is idel or not
 }
 
 //workerJob : job assigned to a worker

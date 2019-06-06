@@ -97,20 +97,26 @@ func (p *Pool) Start() {
 
 //AddJob will enqueue job in the pool
 func (p *Pool) AddJob(value ...interface{}) {
-	p.wg.Add(1)
-	p.counterPool <- 3
-	p.pool <- workerJob{value: value}
+	if p.closed == false {
+		p.wg.Add(1)
+		p.counterPool <- 3
+		p.pool <- workerJob{value: value}
+	}
 }
 
 //retryJob will add job again in the pool
 func (p *Pool) retryJob(job workerJob) {
-	p.wg.Add(1)
-	p.pool <- job
+	if p.closed == false {
+		p.wg.Add(1)
+		p.pool <- job
+	}
 }
 
 //Close will close the pool
 func (p *Pool) Close() {
 	p.wg.Wait()
+	p.closed = true
+	close(p.pool)
 	p.cancel()
 	close(p.counterPool)
 	p.countWG.Wait()

@@ -1,6 +1,7 @@
 package draught
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -13,9 +14,13 @@ func (w *Worker) start() {
 			select {
 			case <-w.ctx.Done():
 				return
-			case job := <-w.jobPool.pool:
+			case job, open := <-w.jobPool.pool:
+				if open == false {
+					return
+				}
+				w.working = true
 				w.processJob(job)
-			default:
+			default: //non blocking
 			}
 		}
 	}()
@@ -24,6 +29,14 @@ func (w *Worker) start() {
 //processJob will process the job
 func (w *Worker) processJob(wj workerJob) {
 	defer w.jobPool.wg.Done()
+	defer func() {
+		w.working = false
+		if rec := recover(); rec != nil {
+			w.jobPool.counterPool <- 0 //error
+			w.log(wj.value, fmt.Errorf("%v", rec))
+		}
+	}()
+
 	//if timer is set then check if timeout is done or not
 	if wj.timer != nil {
 		select {
@@ -35,20 +48,21 @@ func (w *Worker) processJob(wj workerJob) {
 		}
 	}
 
-	if len(wj.value) == 0 {
-		return
-	}
 	if err := w.handler(w.ctx, wj.value...); err == nil {
-		w.jobPool.counterPool <- 1
+		w.jobPool.counterPool <- 1 //success
 	} else {
-		//if logger is set
-		if w.jobPool.logger != nil {
-			w.jobPool.logger.Print(w.jobPool, wj.value, err)
-		} else {
-			log.Println(err)
-		}
+		w.log(wj.value, err)
 		w.retry(wj, err)
-		w.jobPool.counterPool <- 0
+		w.jobPool.counterPool <- 0 //error
+	}
+}
+
+func (w *Worker) log(value []interface{}, err error) {
+	//if logger is set
+	if w.jobPool.logger != nil {
+		w.jobPool.logger.Print(w.jobPool, value, err)
+	} else {
+		log.Println(err)
 	}
 }
 
@@ -63,7 +77,7 @@ func (w *Worker) retry(wj workerJob, err error) {
 		wj.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
 
 		log.Printf("Retrying after: %v ms Job: %v\n", dur, wj.value)
-		w.jobPool.counterPool <- 2
+		w.jobPool.counterPool <- 2 //retry
 		w.jobPool.retryJob(wj)
 	}
 }
