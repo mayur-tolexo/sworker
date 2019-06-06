@@ -11,16 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//I job struct
-type I struct {
-	priority int
-	value    interface{}
-}
-
-func (i I) String() string {
-	return fmt.Sprintf("Priority %v Value %v", i.priority, i.value)
-}
-
 func printIT(ctx context.Context, value ...interface{}) (err error) {
 	return nil
 }
@@ -32,7 +22,7 @@ func TestPool(t *testing.T) {
 	pool := NewPool(2, "", nil)
 	pool.AddWorker(2, handler, true)
 	for i := 0; i < 20; i++ {
-		pool.AddJob(I{value: i, priority: rand.Intn(3)})
+		pool.AddJob(i)
 	}
 	pool.Close()
 	assert := assert.New(t)
@@ -54,7 +44,7 @@ func runBenchmark(b *testing.B, wCount int) {
 	pool.AddWorker(wCount, handler, true)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			pool.AddJob(I{value: 1})
+			pool.AddJob(1)
 		}
 	})
 	pool.Close()
