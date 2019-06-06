@@ -16,42 +16,30 @@ go get github.com/mayur-tolexo/sworker/draught
 
 ### Handler
 ```
-handler is a function to which the worker will call.
-
-FUNCTION DEFINATION:
-func(value ...interface{}) error
+//Handler function which will be called by the go routine
+type Handler func(context.Context, ...interface{}) error
 
 Here PrintAll is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
 ```
 
 ### Example
 ```
-
-//PrintAll : function which worker will call to execute
-func PrintAll(value ...interface{}) error {
+//printAll : function which worker will call to execute
+func printAll(ctx context.Context, value ...interface{}) error {
 	fmt.Println(value)
 	return nil
 }
 
 //main function
 func main() {
-
-	//handler to which worker will call
-	handler := PrintAll
-
-	//jobpool created
-	jp := worker.NewJobPool(3)
-
-	//job added in jobpool
-	jp.AddJob("Hello", "Mayur")
-	jp.AddJob("World")
-	jp.AddJob(1001)
-
-	//5 worker started
-	jp.StartWorker(5, handler)
-
-	//close the jobpool
-	jp.Close()
+	handler := printAll              //handler function which the go routine will call
+	n := 20                          //no of jobs
+	pool := draught.NewSimplePool(n) //new job pool created
+	pool.AddWorker(2, handler, true) //adding 2 workers
+	for i := 0; i < n; i++ {
+		pool.AddJob(i) //adding jobs
+	}
+	pool.Close() //closed the job pool
 }
 ```
 ### SetStackTrace

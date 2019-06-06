@@ -57,5 +57,5 @@ type workerJob struct {
 	err   []error       //all the retries error at their respective indices
 }
 
-//Handler function which will be called by the go routines
+//Handler function which will be called by the go routine
 type Handler func(context.Context, ...interface{}) error
