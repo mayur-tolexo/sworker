@@ -10,15 +10,15 @@ import (
 func NewPool(size int, tag string, logger Logger) *Pool {
 	ctx, cancel := context.WithCancel(context.Background())
 	p := Pool{
-		Tag:         tag,
-		pool:        make(chan workerJob, size),
-		counterPool: make(chan int, size/2), //as their is 1/2 probability of success or failure
-		ctx:         ctx,
-		cancel:      cancel,
-		logger:      logger,
-		workerPool:  make(map[int]*Worker),
-		exponent:    10.0,
+		Tag:        tag,
+		pool:       make(chan workerJob, size),
+		ctx:        ctx,
+		cancel:     cancel,
+		logger:     logger,
+		workerPool: make(map[int]*Worker),
+		exponent:   10.0,
 	}
+	p.counterPool = make(chan int, size/2) //as their is 1/2 probability of success or failure
 	p.startCount()
 	return &p
 }

@@ -13,24 +13,29 @@ type Logger interface {
 
 //Pool contains the jobs
 type Pool struct {
-	Tag          string //tag used to identify a pool
-	pool         chan workerJob
-	countWG      sync.WaitGroup
-	wg           sync.WaitGroup
-	logger       Logger
-	ctx          context.Context
-	cancel       context.CancelFunc
-	workerPool   map[int]*Worker
-	mtx          sync.RWMutex
-	maxRetry     int
-	errCount     int
-	successCount int
-	retryCount   int
-	wCount       int
-	totalCount   int
-	counterPool  chan int // 0:error 1:success 2:retry 3:total
-	exponent     float64  //retry exponent
-	closed       bool
+	Tag        string //tag used to identify a pool
+	pool       chan workerJob
+	wg         sync.WaitGroup
+	logger     Logger
+	ctx        context.Context
+	cancel     context.CancelFunc
+	workerPool map[int]*Worker
+	mtx        sync.RWMutex
+	maxRetry   int
+	exponent   float64 //retry exponent
+	closed     bool
+	counter
+}
+
+//counter of the pool
+type counter struct {
+	errCount     int            //error count
+	successCount int            //success count
+	retryCount   int            //retry count
+	wCount       int            //worker count
+	totalCount   int            //total count
+	counterPool  chan int       // 0:error 1:success 2:retry 3:total
+	countWG      sync.WaitGroup //counter wait group
 }
 
 //Worker will perform the job
