@@ -32,34 +32,33 @@ func (w *Worker) processJob(wj workerJob) {
 	defer func() {
 		w.working = false
 		if rec := recover(); rec != nil {
-			w.jobPool.counterPool <- 0 //error
-			w.log(wj.value, fmt.Errorf("%v", rec))
+			w.jobPool.counterPool <- 0             //error
+			w.log(wj.value, fmt.Errorf("%v", rec)) //logged the panic
 		}
 	}()
 
-	//if timer is set then check if timeout is done or not
-	if wj.timer != nil {
+	if wj.timer != nil { //if timer is set then check if timeout is done or not
 		select {
 		case <-wj.timer.C:
 			break //if timeout is done then process the job
 		default:
-			w.jobPool.retryJob(wj)
+			w.jobPool.retryJob(wj) //requeue the job
 			return
 		}
 	}
 
+	//calling the handler
 	if err := w.handler(w.ctx, wj.value...); err == nil {
 		w.jobPool.counterPool <- 1 //success
 	} else {
-		w.log(wj.value, err)
-		w.retry(wj, err)
+		w.log(wj.value, err)       //logging the error
+		w.retry(wj, err)           //adding job again to retry if possible
 		w.jobPool.counterPool <- 0 //error
 	}
 }
 
 func (w *Worker) log(value []interface{}, err error) {
-	//if logger is set
-	if w.jobPool.logger != nil {
+	if w.jobPool.logger != nil { //if logger is set
 		w.jobPool.logger.Print(w.jobPool, value, err)
 	} else {
 		log.Println(err)
