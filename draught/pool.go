@@ -33,7 +33,8 @@ func (p *Pool) SetTag(tag string) {
 	p.Tag = tag
 }
 
-//SetMaxRetry will set max retries for jobs
+//SetMaxRetry will set max retries for jobs.
+//Default value is 0
 func (p *Pool) SetMaxRetry(n int) {
 	p.maxRetry = n
 }
