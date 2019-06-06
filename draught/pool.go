@@ -23,6 +23,16 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 	return &p
 }
 
+//NewSimplePool will create new pool without any logger and tag
+func NewSimplePool(size int) *Pool {
+	return NewPool(size, "", nil)
+}
+
+//SetTag will set tag in the pool to identify the pool
+func (p *Pool) SetTag(tag string) {
+	p.Tag = tag
+}
+
 //SetMaxRetry will set max retries for jobs
 func (p *Pool) SetMaxRetry(n int) {
 	p.maxRetry = n
