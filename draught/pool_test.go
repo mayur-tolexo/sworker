@@ -49,14 +49,6 @@ func BenchmarkWorker(b *testing.B) {
 
 }
 
-// func BenchmarkWorker100(b *testing.B) {
-// 	runBenchmark(b, 2)
-// }
-
-// func BenchmarkWorkerNumCPU(b *testing.B) {
-// 	runBenchmark(b, runtime.NumCPU()+1)
-// }
-
 func runBenchmark(b *testing.B, wCount int) {
 	handler := printIT
 	pool := NewPool(b.N, "", nil)
