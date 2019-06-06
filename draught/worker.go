@@ -47,18 +47,23 @@ func (w *Worker) processJob(wj workerJob) {
 		} else {
 			log.Println(err)
 		}
-		if wj.retry < w.jobPool.maxRetry {
-			wj.err = append(wj.err, err)
-			wj.retry++
-
-			//retrying exponentially
-			dur := int(math.Pow(w.jobPool.exponent, float64(wj.retry)))
-			wj.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
-
-			log.Printf("Retrying after: %v ms Job: %v\n", dur, wj.value)
-			w.jobPool.counterPool <- 2
-			w.jobPool.retryJob(wj)
-		}
+		w.retry(wj, err)
 		w.jobPool.counterPool <- 0
+	}
+}
+
+//retry will retry job
+func (w *Worker) retry(wj workerJob, err error) {
+	if wj.retry < w.jobPool.maxRetry {
+		wj.err = append(wj.err, err)
+		wj.retry++
+
+		//retrying exponentially
+		dur := int(math.Pow(w.jobPool.exponent, float64(wj.retry)))
+		wj.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
+
+		log.Printf("Retrying after: %v ms Job: %v\n", dur, wj.value)
+		w.jobPool.counterPool <- 2
+		w.jobPool.retryJob(wj)
 	}
 }
