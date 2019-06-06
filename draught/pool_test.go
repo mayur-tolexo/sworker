@@ -3,10 +3,8 @@ package draught
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"runtime"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +14,6 @@ func printIT(ctx context.Context, value ...interface{}) (err error) {
 }
 
 func TestPool(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 
 	handler := printIT
 	pool := NewPool(2, "", nil)

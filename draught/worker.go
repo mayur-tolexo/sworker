@@ -43,7 +43,7 @@ func (w *Worker) processJob(wj workerJob) {
 	} else {
 		//if logger is set
 		if w.jobPool.logger != nil {
-			w.jobPool.logger.Print(w.jobPool, wj, err)
+			w.jobPool.logger.Print(w.jobPool, wj.value, err)
 		} else {
 			log.Println(err)
 		}

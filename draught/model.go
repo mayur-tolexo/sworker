@@ -8,7 +8,7 @@ import (
 
 //Logger will be called if error occured
 type Logger interface {
-	Print(pool *Pool, job workerJob, err error)
+	Print(pool *Pool, value []interface{}, err error)
 }
 
 //Pool contains the jobs
