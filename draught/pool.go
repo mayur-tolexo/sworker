@@ -63,7 +63,8 @@ func (p *Pool) startCount() {
 	}()
 }
 
-//AddWorker will add worker in the pool
+//AddWorker will add worker in the pool.
+//If start value is true then it will immediately start the worker as well
 func (p *Pool) AddWorker(n int, handler Handler, start ...bool) {
 	sTime := time.Now()
 	for i := 1; i <= n; i++ {
@@ -84,7 +85,7 @@ func (p *Pool) AddWorker(n int, handler Handler, start ...bool) {
 	}
 }
 
-//Start will start the workers on the pool
+//Start will start all the workers added in the pool
 func (p *Pool) Start() {
 	p.mtx.RLock()
 	defer p.mtx.RUnlock()
@@ -93,7 +94,7 @@ func (p *Pool) Start() {
 	}
 }
 
-//AddJob will add job in the pool
+//AddJob will enqueue job in the pool
 func (p *Pool) AddJob(value ...interface{}) {
 	p.wg.Add(1)
 	p.counterPool <- 3
