@@ -114,12 +114,12 @@ func (p *Pool) retryJob(job workerJob) {
 
 //Close will close the pool
 func (p *Pool) Close() {
-	p.wg.Wait()
-	p.closed = true
-	close(p.pool)
-	p.cancel()
-	close(p.counterPool)
-	p.countWG.Wait()
+	p.wg.Wait()          //waiting for all job to be done
+	p.closed = true      //marking pool as closed
+	close(p.pool)        //closing the pool
+	p.cancel()           //cancel all worker (go routines)
+	close(p.counterPool) //close counter pool
+	p.countWG.Wait()     //waiting for counter to complete the count
 }
 
 //Stats will print pool stats
