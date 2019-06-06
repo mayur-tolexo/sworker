@@ -1,4 +1,4 @@
-[![Godocs](https://img.shields.io/badge/golang-documentation-blue.svg)](https://www.godoc.org/github.com/mayur-tolexo/sworker/worker)
+[![Godocs](https://img.shields.io/badge/golang-documentation-blue.svg)](https://www.godoc.org/github.com/mayur-tolexo/sworker/draught)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mayur-tolexo/sworker)](https://goreportcard.com/report/github.com/mayur-tolexo/sworker)
 [![Release](https://img.shields.io/github/release/mayur-tolexo/sworker.svg?style=flat-square)](https://github.com/mayur-tolexo/sworker/releases)
 
@@ -8,8 +8,11 @@ Checkout NSQ repo for msg queuing *-* [drift](https://github.com/mayur-tolexo/dr
 
 ### install
 ```
-go get github.com/mayur-tolexo/sworker/worker
+go get github.com/mayur-tolexo/sworker/draught
 ```
+
+### Benchmark
+![Screenshot 2019-06-07 at 1 30 32 AM](https://user-images.githubusercontent.com/20511920/59062640-f744eb00-88c3-11e9-8701-48e51fe6f71d.png)
 
 ### Handler
 ```
