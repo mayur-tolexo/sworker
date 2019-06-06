@@ -46,7 +46,6 @@ func BenchmarkWorker(b *testing.B) {
 			runBenchmark(b, i)
 		})
 	}
-
 }
 
 func runBenchmark(b *testing.B, wCount int) {
