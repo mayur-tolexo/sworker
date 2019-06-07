@@ -68,7 +68,7 @@ func main() {
 type Handler func(context.Context, ...interface{}) error
 
 Here print is a handler function.  
-Define your own handler and pass it in the jobpool and you are ready to go.
+Define your own handler and pass it to the workers and you are ready to go.
 ```
 ### Logger
 There are two ways to set logger in the pool.
@@ -78,7 +78,7 @@ There are two ways to set logger in the pool.
 
 ```
 type Logger struct{}
-//Implementing Logger
+//Implementing Logger interface
 func (l Logger)Print(pool *Pool, value []interface{}, err error){
 }
 
