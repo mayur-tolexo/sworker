@@ -30,9 +30,10 @@ type Pool struct {
 
 //flags contains pool flags
 type flags struct {
-	sTime      time.Time //pool start time
-	consoleLog bool      //this flag will enable console logging
-	profiler   int       //if this flag is set then profiler will be activated
+	sTime       time.Time //pool start time
+	consoleLog  bool      //this flag will enable console logging
+	profiler    int       //if this flag is set then profiler will be activated
+	lastProfile int       //contains last profiler count
 }
 
 //counter of the pool

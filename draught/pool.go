@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 //NewPool will create new pool
@@ -49,6 +51,12 @@ func (p *Pool) SetConsoleLog(enable bool) {
 	p.consoleLog = enable
 }
 
+//SetProfiler will set profiler
+//will fill print/log the job done in given batch size
+func (p *Pool) SetProfiler(batchSize int) {
+	p.profiler = batchSize
+}
+
 //startCount will start counter on job pool
 func (p *Pool) startCount() {
 	p.countWG.Add(1) //one job added for counter to complete
@@ -65,8 +73,31 @@ func (p *Pool) startCount() {
 			case 3:
 				p.totalCount++
 			}
+			if p.profiler != 0 {
+				p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+			}
 		}
 	}()
+}
+
+func (p *Pool) profile(total, success, errorCount, retry int) {
+	processed := success + errorCount
+	if processed != p.lastProfile && (processed)%p.profiler == 0 {
+		p.lastProfile = processed
+		tag := p.Tag
+		if tag == "" {
+			tag = "Stats"
+		}
+
+		msg := fmt.Sprintf("%v: Processed:%d jobs(total:%d success:%d error:%d retry:%d) in\t%.8f SEC\n",
+			tag, processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
+		if p.consoleLog {
+			d := color.New(color.FgHiBlue, color.Bold)
+			d.Print(msg)
+		} else {
+			fmt.Print(msg)
+		}
+	}
 }
 
 //AddWorker will add worker in the pool.
