@@ -61,7 +61,8 @@ func (p *Pool) SetProfiler(batchSize int) {
 //GetErrorPool will return error pool
 //if any error occured then worker will push that error on error pool
 func (p *Pool) GetErrorPool() <-chan WorkerJob {
-	p.ePool = make(chan WorkerJob, cap(p.pool)) //as their is 1/2 probability of success or failure
+	p.ePool = make(chan WorkerJob, cap(p.pool))
+	p.ePoolEnable = true
 	return p.ePool
 }
 
@@ -90,12 +91,8 @@ func (p *Pool) startCount() {
 
 func (p *Pool) getProfilerMsg(total, success, errorCount, retry int) string {
 	processed := success + errorCount
-	tag := p.Tag
-	if tag == "" {
-		tag = "Stats"
-	}
 	return fmt.Sprintf("%v: Processed:%d jobs(total:%d success:%d error:%d retry:%d) in %.8f SEC\n",
-		tag, processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
+		p.getTag(), processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
 }
 
 func (p *Pool) profile(total, success, errorCount, retry int) {
@@ -167,6 +164,9 @@ func (p *Pool) Close() {
 	p.cancel()           //cancel all worker (go routines)
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
+	if p.ePoolEnable {   //if error pool is enable
+		close(p.ePool) //closing the error pool
+	}
 	if p.consoleLog {
 		d := color.New(color.FgGreen, color.Bold)
 		if p.lastProfile != (p.successCount + p.errCount) {
@@ -179,12 +179,8 @@ func (p *Pool) Close() {
 
 //Stats will print pool stats
 func (p *Pool) Stats() {
-	tag := p.Tag
-	if tag == "" {
-		tag = "Stats"
-	}
 	msg := fmt.Sprintf("\n%v: Woker %d Jobs: Total %d Success %d Error %d Retry %d\n",
-		tag, p.wCount, p.totalCount, p.successCount, p.errCount, p.retryCount)
+		p.getTag(), p.wCount, p.totalCount, p.successCount, p.errCount, p.retryCount)
 	if p.consoleLog {
 		d := color.New(color.FgHiMagenta, color.Bold)
 		d.Print(msg)
@@ -226,4 +222,12 @@ func (p *Pool) PoolCap() int {
 //PoolLen will return pool length
 func (p *Pool) PoolLen() int {
 	return len(p.pool)
+}
+
+func (p *Pool) getTag() string {
+	tag := p.Tag
+	if tag == "" {
+		tag = "Pool"
+	}
+	return tag
 }

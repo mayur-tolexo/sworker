@@ -2,6 +2,7 @@ package draught
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -15,7 +16,6 @@ type Logger interface {
 type Pool struct {
 	Tag        string //tag used to identify a pool
 	pool       chan WorkerJob
-	ePool      chan WorkerJob
 	wg         sync.WaitGroup
 	logger     Logger
 	ctx        context.Context
@@ -27,6 +27,12 @@ type Pool struct {
 	closed     bool
 	counter
 	flags
+	pError
+}
+
+type pError struct {
+	ePool       chan WorkerJob
+	ePoolEnable bool
 }
 
 //flags contains pool flags
@@ -74,6 +80,10 @@ func (wj WorkerJob) GetValue() []interface{} {
 //GetError will return errors
 func (wj WorkerJob) GetError() []error {
 	return wj.err
+}
+
+func (wj WorkerJob) String() string {
+	return fmt.Sprintf("Job value:%v error:%v", wj.value, wj.err)
 }
 
 //Handler function which will be called by the go routine
