@@ -34,12 +34,14 @@ func (w *Worker) run() {
 
 //processJob will process the job
 func (w *Worker) processJob(wj WorkerJob) {
+	var err error
 	defer w.jobPool.wg.Done()
 	defer func() {
 		w.working = false
 		if rec := recover(); rec != nil {
-			w.jobPool.counterPool <- 0             //error
-			w.log(wj.value, fmt.Errorf("%v", rec)) //logged the panic
+			w.retry(wj, err)                              //adding job again to retry if possible
+			w.jobPool.counterPool <- 0                    //error
+			w.log(wj.value, fmt.Errorf("Panic: %v", rec)) //logged the panic
 		}
 	}()
 
@@ -54,7 +56,7 @@ func (w *Worker) processJob(wj WorkerJob) {
 	}
 
 	//calling the handler
-	if err := w.handler(w.jobPool.ctx, wj.value...); err == nil {
+	if err = w.handler(w.jobPool.ctx, wj.value...); err == nil {
 		w.jobPool.counterPool <- 1 //success
 	} else {
 		w.log(wj.value, err)       //logging the error
@@ -69,12 +71,11 @@ func (w *Worker) processJob(wj WorkerJob) {
 func (w *Worker) log(value []interface{}, err error) {
 	if w.jobPool.logger != nil { //if logger is set
 		w.jobPool.logger.Print(w.jobPool, value, err)
-	} else {
-		log.Println(err)
-	}
-	if w.jobPool.consoleLog {
+	} else if w.jobPool.consoleLog {
 		d := color.New(color.FgHiRed)
 		d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, value)
+	} else {
+		log.Println(err)
 	}
 }
 
