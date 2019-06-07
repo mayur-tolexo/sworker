@@ -82,22 +82,26 @@ func (p *Pool) startCount() {
 	}()
 }
 
+func (p *Pool) getProfilerMsg(total, success, errorCount, retry int) string {
+	processed := success + errorCount
+	tag := p.Tag
+	if tag == "" {
+		tag = "Stats"
+	}
+	return fmt.Sprintf("%v: Processed:%d jobs(total:%d success:%d error:%d retry:%d) in %.8f SEC\n",
+		tag, processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
+}
+
 func (p *Pool) profile(total, success, errorCount, retry int) {
 	processed := success + errorCount
 	if processed != p.lastProfile && (processed)%p.profiler == 0 {
 		p.lastProfile = processed
-		tag := p.Tag
-		if tag == "" {
-			tag = "Stats"
-		}
-
-		msg := fmt.Sprintf("%v: Processed:%d jobs(total:%d success:%d error:%d retry:%d) in\t%.8f SEC\n",
-			tag, processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
+		msg := p.getProfilerMsg(total, success, errorCount, retry)
 		if p.consoleLog {
 			d := color.New(color.FgHiBlue, color.Bold)
 			d.Print(msg)
 		} else {
-			fmt.Print(msg)
+			log.Print(msg)
 		}
 	}
 }
@@ -159,6 +163,14 @@ func (p *Pool) Close() {
 	p.countWG.Wait()     //waiting for counter to complete the count
 	if p.consoleLog {
 		d := color.New(color.FgGreen, color.Bold)
+		if p.lastProfile != (p.successCount + p.errCount) {
+			msg := p.getProfilerMsg(p.totalCount, p.successCount, p.errCount, p.retryCount)
+			if p.consoleLog {
+				d.Print(msg)
+			} else {
+				log.Print(msg)
+			}
+		}
 		d.Printf("--- %s POOL CLOSED ---\n", p.Tag)
 	}
 }
