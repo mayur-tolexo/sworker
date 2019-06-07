@@ -39,7 +39,7 @@ func (w *Worker) processJob(wj WorkerJob) {
 	defer func() {
 		w.working = false
 		if rec := recover(); rec != nil {
-			w.retry(wj, err)                              //adding job again to retry if possible
+			// w.retry(wj, err)                              //adding job again to retry if possible
 			w.jobPool.counterPool <- 0                    //error
 			w.log(wj.value, fmt.Errorf("Panic: %v", rec)) //logged the panic
 		}
