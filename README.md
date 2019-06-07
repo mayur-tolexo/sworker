@@ -67,7 +67,8 @@ func main() {
 //Handler function which will be called by the go routine
 type Handler func(context.Context, ...interface{}) error
 
-Here print is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
+Here print is a handler function.  
+Define your own handler and pass it in the jobpool and you are ready to go.
 ```
 ### Logger
 There are two ways to set logger in the pool.
@@ -98,14 +99,14 @@ This will return a channel of workerJob which contains error occured and job val
 ### Retries
 ```
 pool.SetMaxRetry(2)
-To set maximum number of retires to be done if error occured while processing the job.
+To set maximum number of retires to be done if error occured while processing the job.  
 Default is 0. Retry won't work if panic occured while processing the job.
 ```
 
 ### Set exponent base of retry
 ```
 pool.SetRetryExponent(2)
-If error occured then that job will be delayed exponentially.
+If error occured then that job will be delayed exponentially.  
 Default exponent base is 10. We can set to accordingly.
 ```
 
