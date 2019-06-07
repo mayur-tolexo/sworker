@@ -33,7 +33,7 @@ func (w *Worker) run() {
 }
 
 //processJob will process the job
-func (w *Worker) processJob(wj workerJob) {
+func (w *Worker) processJob(wj WorkerJob) {
 	defer w.jobPool.wg.Done()
 	defer func() {
 		w.working = false
@@ -76,7 +76,7 @@ func (w *Worker) log(value []interface{}, err error) {
 }
 
 //retry will retry job
-func (w *Worker) retry(wj workerJob, err error) {
+func (w *Worker) retry(wj WorkerJob, err error) {
 	if wj.retry < w.jobPool.maxRetry {
 		wj.err = append(wj.err, err)
 		wj.retry++

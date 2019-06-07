@@ -14,8 +14,8 @@ type Logger interface {
 //Pool contains the jobs
 type Pool struct {
 	Tag        string //tag used to identify a pool
-	pool       chan workerJob
-	ePool      chan workerJob
+	pool       chan WorkerJob
+	ePool      chan WorkerJob
 	wg         sync.WaitGroup
 	logger     Logger
 	ctx        context.Context
@@ -53,13 +53,13 @@ type Worker struct {
 	ID      int       //worker ID
 	jobPool *Pool     //common job pool
 	handler Handler   //handler to call
-	job     workerJob //current job
+	job     WorkerJob //current job
 	working bool      //flag to check worker is idel or not
 	once    sync.Once //worker will start once
 }
 
-//workerJob : job assigned to a worker
-type workerJob struct {
+//WorkerJob : job assigned to a worker
+type WorkerJob struct {
 	value []interface{} //job value
 	retry int           //number of retries done
 	timer *time.Timer   //timer set if job fails
@@ -67,12 +67,12 @@ type workerJob struct {
 }
 
 //GetValue will return job value
-func (wj workerJob) GetValue() []interface{} {
+func (wj WorkerJob) GetValue() []interface{} {
 	return wj.value
 }
 
 //GetError will return errors
-func (wj workerJob) GetError() []error {
+func (wj WorkerJob) GetError() []error {
 	return wj.err
 }
 
