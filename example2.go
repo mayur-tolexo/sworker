@@ -35,7 +35,7 @@ func main() {
 		pool.AddJob(i) //adding jobs
 	}
 	pool.Close()  //closed the job pool
-	wj := <-ePool //fetching only first error
+	wj := <-ePool //fetching only the first error
 	fmt.Println(wj)
 	pool.Stats() //pool stats
 }
