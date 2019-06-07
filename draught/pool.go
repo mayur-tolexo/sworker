@@ -165,11 +165,7 @@ func (p *Pool) Close() {
 		d := color.New(color.FgGreen, color.Bold)
 		if p.lastProfile != (p.successCount + p.errCount) {
 			msg := p.getProfilerMsg(p.totalCount, p.successCount, p.errCount, p.retryCount)
-			if p.consoleLog {
-				d.Print(msg)
-			} else {
-				log.Print(msg)
-			}
+			d.Print(msg)
 		}
 		d.Printf("--- %s POOL CLOSED ---\n", p.Tag)
 	}
