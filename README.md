@@ -19,14 +19,14 @@ go get github.com/mayur-tolexo/sworker/draught
 - Recovery
 - [Logger](#logger)
 - [Error Pool](#error-pool)
-- Retries
-- Set exponent base by which retry will execute
-- Complete Pool Status
-	- Total job count
-	- Successful job count
-	- Failure job count
-	- Retry count
-	- Worker count
+- [Retries](#retries)
+- [Set exponent base by which retry will execute](#set-exponent-base-of-retry)
+- [Complete Pool Stats](#pool-stats)
+	- [Total job count](#total-job-count)
+	- [Successful job count](#successful-job-count)
+	- [Failure job count](#failure-job-count)
+	- [Retry count](#retry-count)
+	- [Worker count](#worker-count)
 - Thread safe job add (You can add job in go routines as well)
 - Profiler (To print the current pool status after every specified interval)
 - Worker job process limit (Beyond which it will log worker current status)
@@ -93,6 +93,47 @@ Console log will enable pool error and close notification logging in console
 ```
 pool.GetErrorPool()
 This will return a channel of workerJob which contains error occured and job value.
+```
+
+### Retries
+```
+pool.SetMaxRetry(2)
+To set maximum number of retires to be done if error occured while processing the job.
+Default is 0. Retry won't work if panic occured while processing the job.
+```
+
+### Set exponent base of retry
+```
+pool.SetRetryExponent(2)
+If error occured then that job will be delayed exponentially.
+Default exponent base is 10. We can set to accordingly.
+```
+
+### Pool Stats
+#### Total job count
+```
+pool.TotalCount()
+Total job processed by the pool workers.
+```
+#### Successful job count
+```
+pool.SuccessCount()
+Successfully processed jobs count
+```
+#### Failure job count
+```
+pool.ErrorCount()
+Error count while processing job
+```
+#### Retry count
+```
+pool.RetryCount()
+Retry count while processing job
+```
+#### Worker count
+```
+pool.WorkerCount()
+No of Worker added on pool
 ```
 
 ### Console Log
