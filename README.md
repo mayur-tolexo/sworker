@@ -16,19 +16,20 @@ go get github.com/mayur-tolexo/sworker/draught
 
 ### Fetures
 - Recovery
-- Logging
+- Logger
 - Error Pool
 - Retries
-- Exponent base by which retry will execute
+- Set exponent base by which retry will execute
 - Complete Pool Status
 	- Total job count
 	- Successful job count
 	- Failure job count
 	- Retry count
 	- Worker count
-- Thread safe job add
-- Profiler
+- Thread safe job add (You can add job in go routines as well)
+- Profiler (To print the current pool status after every specified interval)
 - Worker job process limit (Beyond which it will log worker current status)
+- Console log
 
 ### Example 1
 ```
