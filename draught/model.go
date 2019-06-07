@@ -25,6 +25,14 @@ type Pool struct {
 	exponent   float64 //retry exponent
 	closed     bool
 	counter
+	flags
+}
+
+//flags contains pool flags
+type flags struct {
+	sTime      time.Time //pool start time
+	consoleLog bool      //this flag will enable console logging
+	profiler   int       //if this flag is set then profiler will be activated
 }
 
 //counter of the pool
@@ -40,13 +48,12 @@ type counter struct {
 
 //Worker will perform the job
 type Worker struct {
-	ID      int                //worker ID
-	jobPool *Pool              //common job pool
-	handler Handler            //handler to call
-	job     workerJob          //current job
-	ctx     context.Context    //each worker context
-	cancel  context.CancelFunc //context cancel function
-	working bool               //flag to check worker is idel or not
+	ID      int       //worker ID
+	jobPool *Pool     //common job pool
+	handler Handler   //handler to call
+	job     workerJob //current job
+	working bool      //flag to check worker is idel or not
+	once    sync.Once //worker will start once
 }
 
 //workerJob : job assigned to a worker

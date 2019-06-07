@@ -5,14 +5,20 @@ import (
 	"log"
 	"math"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 //start will start the worker
 func (w *Worker) start() {
+	w.once.Do(w.run)
+}
+
+func (w *Worker) run() {
 	go func() {
 		for {
 			select {
-			case <-w.ctx.Done():
+			case <-w.jobPool.ctx.Done():
 				return
 			case job, open := <-w.jobPool.pool:
 				if open == false {
@@ -48,7 +54,7 @@ func (w *Worker) processJob(wj workerJob) {
 	}
 
 	//calling the handler
-	if err := w.handler(w.ctx, wj.value...); err == nil {
+	if err := w.handler(w.jobPool.ctx, wj.value...); err == nil {
 		w.jobPool.counterPool <- 1 //success
 	} else {
 		w.log(wj.value, err)       //logging the error
@@ -62,6 +68,10 @@ func (w *Worker) log(value []interface{}, err error) {
 		w.jobPool.logger.Print(w.jobPool, value, err)
 	} else {
 		log.Println(err)
+	}
+	if w.jobPool.consoleLog {
+		d := color.New(color.FgHiRed)
+		d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, value)
 	}
 }
 

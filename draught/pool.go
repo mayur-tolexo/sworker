@@ -44,6 +44,11 @@ func (p *Pool) SetRetryExponent(n float64) {
 	p.exponent = n
 }
 
+//SetConsoleLog will enable/disable console logging
+func (p *Pool) SetConsoleLog(enable bool) {
+	p.consoleLog = enable
+}
+
 //startCount will start counter on job pool
 func (p *Pool) startCount() {
 	p.countWG.Add(1) //one job added for counter to complete
@@ -73,8 +78,6 @@ func (p *Pool) AddWorker(n int, handler Handler, start ...bool) {
 			ID:      i + sTime.Nanosecond(),
 			jobPool: p,
 			handler: handler,
-			ctx:     p.ctx,
-			cancel:  p.cancel,
 		}
 		p.mtx.Lock()
 		p.workerPool[w.ID] = w
@@ -82,6 +85,7 @@ func (p *Pool) AddWorker(n int, handler Handler, start ...bool) {
 		p.mtx.Unlock()
 		if len(start) > 0 && start[0] {
 			w.start()
+			p.sTime = sTime
 		}
 	}
 }
@@ -93,6 +97,7 @@ func (p *Pool) Start() {
 	for _, w := range p.workerPool {
 		w.start()
 	}
+	p.sTime = time.Now()
 }
 
 //AddJob will enqueue job in the pool
@@ -116,7 +121,6 @@ func (p *Pool) retryJob(job workerJob) {
 func (p *Pool) Close() {
 	p.wg.Wait()          //waiting for all job to be done
 	p.closed = true      //marking pool as closed
-	close(p.pool)        //closing the pool
 	p.cancel()           //cancel all worker (go routines)
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
