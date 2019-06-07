@@ -14,15 +14,7 @@ go get github.com/mayur-tolexo/sworker/draught
 ### Benchmark
 ![Screenshot 2019-06-07 at 1 30 32 AM](https://user-images.githubusercontent.com/20511920/59062640-f744eb00-88c3-11e9-8701-48e51fe6f71d.png)
 
-### Handler
-```
-//Handler function which will be called by the go routine
-type Handler func(context.Context, ...interface{}) error
-
-Here print is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
-```
-
-### Example
+### Example1
 ```
 //print : function which worker will call to execute
 func print(ctx context.Context, value ...interface{}) error {
@@ -35,7 +27,7 @@ func main() {
 	handler := print                 //handler function which the go routine will call
 	n := 20                          //no of jobs
 	pool := draught.NewSimplePool(n) //new job pool created
-	pool.SetTag("Print")             //added tag to the pool
+	pool.SetTag("PRINTER")           //added tag to the pool
 	pool.SetProfiler(10)             //added profiler batch size
 	pool.SetConsoleLog(true)         //enable console log
 	pool.AddWorker(2, handler, true) //adding 2 workers
@@ -44,5 +36,16 @@ func main() {
 		pool.AddJob(i) //adding jobs
 	}
 	pool.Close() //closed the job pool
+	pool.Stats() //pool stats
 }
+```
+### Output
+
+
+### Handler
+```
+//Handler function which will be called by the go routine
+type Handler func(context.Context, ...interface{}) error
+
+Here print is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
 ```

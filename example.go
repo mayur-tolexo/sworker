@@ -18,7 +18,7 @@ func main() {
 	handler := print                 //handler function which the go routine will call
 	n := 20                          //no of jobs
 	pool := draught.NewSimplePool(n) //new job pool created
-	pool.SetTag("Print")             //added tag to the pool
+	pool.SetTag("PRINTER")           //added tag to the pool
 	pool.SetProfiler(10)             //added profiler batch size
 	pool.SetConsoleLog(true)         //enable console log
 	pool.AddWorker(2, handler, true) //adding 2 workers
@@ -27,4 +27,5 @@ func main() {
 		pool.AddJob(i) //adding jobs
 	}
 	pool.Close() //closed the job pool
+	pool.Stats() //pool stats
 }

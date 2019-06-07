@@ -3,6 +3,7 @@ package draught
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/fatih/color"
@@ -156,6 +157,10 @@ func (p *Pool) Close() {
 	p.cancel()           //cancel all worker (go routines)
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
+	if p.consoleLog {
+		d := color.New(color.FgGreen, color.Bold)
+		d.Printf("--- %s POOL CLOSED ---\n", p.Tag)
+	}
 }
 
 //Stats will print pool stats
@@ -164,8 +169,14 @@ func (p *Pool) Stats() {
 	if tag == "" {
 		tag = "Stats"
 	}
-	fmt.Printf("\n%v: Woker %d Job: Total %d Retry %d Success %d Error %d\n",
+	msg := fmt.Sprintf("\n%v: Woker %d Jobs: Total %d Retry %d Success %d Error %d\n",
 		tag, p.wCount, p.totalCount, p.retryCount, p.successCount, p.errCount)
+	if p.consoleLog {
+		d := color.New(color.FgHiMagenta, color.Bold)
+		d.Print(msg)
+	} else {
+		log.Print(msg)
+	}
 }
 
 //SuccessCount will return success count
@@ -186,4 +197,9 @@ func (p *Pool) TotalCount() int {
 //RetryCount will return retry count
 func (p *Pool) RetryCount() int {
 	return p.retryCount
+}
+
+//WorkerCount will return worker count
+func (p *Pool) WorkerCount() int {
+	return p.wCount
 }
