@@ -20,14 +20,14 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Logger](#logger)
 - [Error Pool](#error-pool)
 - [Retries](#retries)
-- [Set exponent base by which retry will execute](#set-exponent-base-of-retry)
+- [Set exponent base by which retry will be delayed](#set-exponent-base-of-retry)
 - [Complete Pool Stats](#pool-stats)
 	- [Total job count](#total-job-count)
 	- [Successful job count](#successful-job-count)
 	- [Failure job count](#failure-job-count)
 	- [Retry count](#retry-count)
 	- [Worker count](#worker-count)
-- [Thread safe job add](#thread-safe-job-add) (You can add job in go routines as well)
+- [Thread safe job addition](#thread-safe-job-addition) (You can add job in go routines as well)
 - [Profiler](#profiler) (To print the current pool status after every specified interval)
 - Worker job process limit (Beyond which it will log worker current status)
 - [Console log](#console-log)
@@ -136,7 +136,7 @@ pool.WorkerCount()
 No of Worker added on pool
 ```
 
-### Thread safe job add
+### Thread safe job addition
 ```
 for i := 1; i <= n; i++ {
 	go func(){pool.AddJob(i)}()
