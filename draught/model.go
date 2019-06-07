@@ -15,6 +15,7 @@ type Logger interface {
 type Pool struct {
 	Tag        string //tag used to identify a pool
 	pool       chan workerJob
+	ePool      chan workerJob
 	wg         sync.WaitGroup
 	logger     Logger
 	ctx        context.Context
@@ -63,6 +64,16 @@ type workerJob struct {
 	retry int           //number of retries done
 	timer *time.Timer   //timer set if job fails
 	err   []error       //all the retries error at their respective indices
+}
+
+//GetValue will return job value
+func (wj workerJob) GetValue() []interface{} {
+	return wj.value
+}
+
+//GetError will return errors
+func (wj workerJob) GetError() []error {
+	return wj.err
 }
 
 //Handler function which will be called by the go routine

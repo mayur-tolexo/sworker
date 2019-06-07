@@ -14,6 +14,7 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 	p := Pool{
 		Tag:        tag,
 		pool:       make(chan workerJob, size),
+		ePool:      make(chan workerJob, size/2), //as their is 1/2 probability of success or failure
 		ctx:        ctx,
 		cancel:     cancel,
 		logger:     logger,
