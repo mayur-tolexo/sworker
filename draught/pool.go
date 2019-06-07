@@ -15,7 +15,6 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 	p := Pool{
 		Tag:        tag,
 		pool:       make(chan workerJob, size),
-		ePool:      make(chan workerJob, size/2), //as their is 1/2 probability of success or failure
 		ctx:        ctx,
 		cancel:     cancel,
 		logger:     logger,
@@ -57,6 +56,13 @@ func (p *Pool) SetConsoleLog(enable bool) {
 //will fill print/log the job done in given batch size
 func (p *Pool) SetProfiler(batchSize int) {
 	p.profiler = batchSize
+}
+
+//GetErrorPool will return error pool
+//if any error occured then worker will push that error on error pool
+func (p *Pool) GetErrorPool() <-chan workerJob {
+	p.ePool = make(chan workerJob, cap(p.pool)) //as their is 1/2 probability of success or failure
+	return p.ePool
 }
 
 //startCount will start counter on job pool
@@ -210,4 +216,14 @@ func (p *Pool) RetryCount() int {
 //WorkerCount will return worker count
 func (p *Pool) WorkerCount() int {
 	return p.wCount
+}
+
+//PoolCap will return pool capacity
+func (p *Pool) PoolCap() int {
+	return cap(p.pool)
+}
+
+//PoolLen will return pool length
+func (p *Pool) PoolLen() int {
+	return len(p.pool)
 }
