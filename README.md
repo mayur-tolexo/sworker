@@ -4,6 +4,7 @@
 
 # sworker
 Easy worker setup for your code.
+Have some draught and let this repo manage your load using go routines.
 Checkout NSQ repo for msg queuing *-* [drift](https://github.com/mayur-tolexo/drift)
 
 ### install
@@ -16,8 +17,8 @@ go get github.com/mayur-tolexo/sworker/draught
 
 ### Fetures
 - Recovery
-- Logger
-- Error Pool
+- [Logger](#logger)
+- [Error Pool](#error-pool)
 - Retries
 - Set exponent base by which retry will execute
 - Complete Pool Status
@@ -29,7 +30,7 @@ go get github.com/mayur-tolexo/sworker/draught
 - Thread safe job add (You can add job in go routines as well)
 - Profiler (To print the current pool status after every specified interval)
 - Worker job process limit (Beyond which it will log worker current status)
-- Console log
+- [Console log](#console-log)
 
 ### Example 1
 ```
@@ -67,4 +68,35 @@ func main() {
 type Handler func(context.Context, ...interface{}) error
 
 Here print is a handler function. Define your own handler and pass it in the jobpool and you are ready to go.
+```
+### Logger
+There are two ways to set logger in the pool.
+- While creating the pool
+- Using SetLogger() method after pool creation
+
+
+```
+type Logger struct{}
+//Implementing Logger
+func (l Logger)Print(pool *Pool, value []interface{}, err error){
+}
+
+// While creating the pool
+NewPool(size int, tag string, Logger{})
+
+// Using SetLogger() method after pool creation
+pool.SetLogger(Logger{})
+Console log will enable pool error and close notification logging in console
+```
+
+### Error Pool
+```
+pool.GetErrorPool()
+This will return a channel of workerJob which contains error occured and job value.
+```
+
+### Console Log
+```
+pool.SetConsoleLog(true)
+Console log will enable pool error and close notification logging in console
 ```
