@@ -14,6 +14,22 @@ go get github.com/mayur-tolexo/sworker/draught
 ### Benchmark
 ![Screenshot 2019-06-07 at 1 30 32 AM](https://user-images.githubusercontent.com/20511920/59062640-f744eb00-88c3-11e9-8701-48e51fe6f71d.png)
 
+### Fetures
+- Recovery
+- Logging
+- Error Pool
+- Retries
+- Exponent base by which retry will execute
+- Complete Pool Status
+	- Total job count
+	- Successful job count
+	- Failure job count
+	- Retry count
+	- Worker count
+- Thread safe job add
+- Profiler
+- Worker job process limit (Beyond which it will log worker current status)
+
 ### Example 1
 ```
 //print : function which worker will call to execute
