@@ -97,8 +97,12 @@ func (p *Pool) startCount() {
 			}
 			if p.ticker != nil { //if time profiler is enabled
 				select {
-				case <-p.ticker.C:
-					p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+				case _, open := <-p.ticker.C:
+					if open {
+						p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+					} else {
+						p.ticker.Stop()
+					}
 				default:
 				}
 			}
@@ -187,6 +191,9 @@ func (p *Pool) Close() {
 	if p.ePoolEnable {   //if error pool is enable
 		p.ePoolEnable = false //disabling flag
 		close(p.ePool)        //closing the error pool
+	}
+	if p.ticker != nil {
+		p.ticker.Stop()
 	}
 	if p.consoleLog {
 		d := color.New(color.FgGreen, color.Bold)
