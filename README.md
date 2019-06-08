@@ -32,7 +32,7 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Add Worker](#add-worker) _(Thread safe)_
 - [Set Tag](#set-tag)
 - [Profiler](#profiler) _(To print the current pool status after every specified interval)_
-- [Job process time limit](#) _(Beyond which it will log worker current status)_
+- [Job process time limit](#) _(Beyond which it will log pool current status)_
 - [Console log](#console-log)
 
 ### Example 1
