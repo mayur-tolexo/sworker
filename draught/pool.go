@@ -92,22 +92,7 @@ func (p *Pool) startCount() {
 			case 3:
 				p.totalCount++
 			}
-			//if batch profiler is enabled
-			if p.profiler != 0 {
-				p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
-			}
-			//if time profiler is enabled
-			if p.ticker != nil {
-				select {
-				case _, open := <-p.ticker.C:
-					if open {
-						p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
-					} else {
-						p.ticker = nil
-					}
-				default:
-				}
-			}
+			p.logProfile(p.totalCount, p.successCount, p.errCount, p.retryCount)
 		}
 	}()
 }
@@ -116,6 +101,25 @@ func (p *Pool) getProfilerMsg(total, success, errorCount, retry int) string {
 	processed := success + errorCount
 	return fmt.Sprintf("%v: Processed:%d jobs(total:%d success:%d error:%d retry:%d) in %.8f SEC\n",
 		p.getTag(), processed, total, success, errorCount, retry, time.Since(p.sTime).Seconds())
+}
+
+func (p *Pool) logProfile(total, success, errorCount, retry int) {
+	//if batch profiler is enabled
+	if p.profiler != 0 {
+		p.profile(total, success, errorCount, retry)
+	}
+	//if time profiler is enabled
+	if p.ticker != nil {
+		select {
+		case _, open := <-p.ticker.C:
+			if open {
+				p.profile(total, success, errorCount, retry)
+			} else {
+				p.ticker = nil
+			}
+		default:
+		}
+	}
 }
 
 func (p *Pool) profile(total, success, errorCount, retry int) {
