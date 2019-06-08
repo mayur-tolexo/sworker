@@ -5,8 +5,8 @@
 [![Release](https://img.shields.io/github/release/mayur-tolexo/sworker.svg?style=flat-square)](https://github.com/mayur-tolexo/sworker/releases)
 
 # sworker
-Easy worker setup for your code.
-Have some draught and let this repo manage your load using go routines.
+Easy worker setup for your code.  
+Have some draught and let this repo manage your load using go routines.  
 Checkout NSQ repo for msg queuing *-* [drift](https://github.com/mayur-tolexo/drift)
 
 ### install
