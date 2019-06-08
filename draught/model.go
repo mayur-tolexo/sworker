@@ -9,13 +9,13 @@ import (
 
 //Logger will be called if error occured
 type Logger interface {
-	Print(pool *Pool, value []interface{}, err error)
+	Print(*Pool, []interface{}, error)
 }
 
 //Pool contains the jobs
 type Pool struct {
 	Tag        string //tag used to identify a pool
-	pool       chan WorkerJob
+	pool       chan *WorkerJob
 	wg         sync.WaitGroup
 	logger     Logger
 	ctx        context.Context
@@ -31,7 +31,7 @@ type Pool struct {
 }
 
 type pError struct {
-	ePool       chan WorkerJob
+	ePool       chan *WorkerJob
 	ePoolEnable bool
 }
 
@@ -73,16 +73,16 @@ type WorkerJob struct {
 }
 
 //GetValue will return job value
-func (wj WorkerJob) GetValue() []interface{} {
+func (wj *WorkerJob) GetValue() []interface{} {
 	return wj.value
 }
 
 //GetError will return errors
-func (wj WorkerJob) GetError() []error {
+func (wj *WorkerJob) GetError() []error {
 	return wj.err
 }
 
-func (wj WorkerJob) String() string {
+func (wj *WorkerJob) String() string {
 	return fmt.Sprintf("Job value:%v error:%v", wj.value, wj.err)
 }
 

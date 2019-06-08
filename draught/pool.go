@@ -14,7 +14,7 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 	ctx, cancel := context.WithCancel(context.Background())
 	p := Pool{
 		Tag:        tag,
-		pool:       make(chan WorkerJob, size),
+		pool:       make(chan *WorkerJob, size),
 		ctx:        ctx,
 		cancel:     cancel,
 		logger:     logger,
@@ -29,6 +29,11 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 //NewSimplePool will create new pool without any logger and tag
 func NewSimplePool(size int) *Pool {
 	return NewPool(size, "", nil)
+}
+
+//SetLogger will set logger
+func (p *Pool) SetLogger(logger Logger) {
+	p.logger = logger
 }
 
 //SetTag will set tag in the pool to identify the pool
@@ -60,8 +65,8 @@ func (p *Pool) SetProfiler(batchSize int) {
 
 //GetErrorPool will return error pool
 //if any error occured then worker will push that error on error pool
-func (p *Pool) GetErrorPool() <-chan WorkerJob {
-	p.ePool = make(chan WorkerJob, cap(p.pool))
+func (p *Pool) GetErrorPool() <-chan *WorkerJob {
+	p.ePool = make(chan *WorkerJob, cap(p.pool))
 	p.ePoolEnable = true
 	return p.ePool
 }
@@ -145,12 +150,12 @@ func (p *Pool) AddJob(value ...interface{}) {
 	if p.closed == false {
 		p.wg.Add(1)
 		p.counterPool <- 3
-		p.pool <- WorkerJob{value: value}
+		p.pool <- &WorkerJob{value: value}
 	}
 }
 
 //retryJob will add job again in the pool
-func (p *Pool) retryJob(job WorkerJob) {
+func (p *Pool) retryJob(job *WorkerJob) {
 	if p.closed == false {
 		p.wg.Add(1)
 		p.pool <- job
