@@ -170,7 +170,8 @@ func (p *Pool) Close() {
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
 	if p.ePoolEnable {   //if error pool is enable
-		close(p.ePool) //closing the error pool
+		p.ePoolEnable = false //disabling tag
+		close(p.ePool)        //closing the error pool
 	}
 	if p.consoleLog {
 		d := color.New(color.FgGreen, color.Bold)
