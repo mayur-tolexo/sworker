@@ -30,10 +30,3 @@ install:
   # Add Godeps dependencies to GOPATH and PATH
   - export GOPATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace:$GOPATH"
   - export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
-
-# script always runs to completion (set +e). If we have linter issues AND a
-# failing test, we want to see both. Configure golangci-lint with a
-# .golangci.yml file at the top level of your repo.
-script:
-  - golangci-lint run       # run a bunch of code checkers/linters in parallel
-  - go test -v -race ./...  # Run all the tests with the race detector enabled
