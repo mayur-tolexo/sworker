@@ -81,12 +81,16 @@ func (w *Worker) appendError(err error) {
 func (w *Worker) log(err error) {
 	if w.jobPool.logger != nil { //if logger is set
 		w.jobPool.logger.Print(w.jobPool, w.job.value, err)
-	} else if w.jobPool.consoleLog {
-		d := color.New(color.FgHiRed)
-		d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n",
-			w.jobPool.Tag, err, w.job.value)
 	} else {
-		log.Println(err)
+		msg := fmt.Sprintf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n",
+			w.jobPool.Tag, err, w.job.value)
+
+		if w.jobPool.consoleLog {
+			d := color.New(color.FgRed)
+			d.Print(msg)
+		} else {
+			log.Println(msg)
+		}
 	}
 }
 
