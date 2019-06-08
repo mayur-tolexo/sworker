@@ -56,12 +56,12 @@ type counter struct {
 
 //Worker will perform the job
 type Worker struct {
-	ID      int       //worker ID
-	jobPool *Pool     //common job pool
-	handler Handler   //handler to call
-	job     WorkerJob //current job
-	working bool      //flag to check worker is idel or not
-	once    sync.Once //worker will start once
+	ID      int        //worker ID
+	jobPool *Pool      //common job pool
+	handler Handler    //handler to call
+	job     *WorkerJob //current job
+	working bool       //flag to check worker is idel or not
+	once    sync.Once  //worker will start once
 }
 
 //WorkerJob : job assigned to a worker

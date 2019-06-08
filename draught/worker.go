@@ -24,8 +24,9 @@ func (w *Worker) run() {
 				if open == false {
 					return
 				}
+				w.job = job
 				w.working = true
-				w.processJob(job)
+				w.processJob()
 			default: //non blocking
 			}
 		}
@@ -33,36 +34,36 @@ func (w *Worker) run() {
 }
 
 //processJob will process the job
-func (w *Worker) processJob(wj *WorkerJob) {
+func (w *Worker) processJob() {
 	var err error
 	defer w.jobPool.wg.Done()
 	defer func() {
 		w.working = false
 		if rec := recover(); rec != nil {
 			err = fmt.Errorf("Panic: %v", rec)
-			w.appendError(wj, err)     //appending error in worker job
-			w.log(wj.value, err)       //logged the panic
+			w.appendError(err)         //appending error in worker job
+			w.log(err)                 //logged the panic
 			w.jobPool.counterPool <- 0 //error
 		}
 	}()
 
-	if wj.timer != nil { //if timer is set then check if timeout is done or not
+	if w.job.timer != nil { //if timer is set then check if timeout is done or not
 		select {
-		case <-wj.timer.C:
+		case <-w.job.timer.C:
 			break //if timeout is done then process the job
 		default:
-			w.jobPool.retryJob(wj) //requeue the job
+			w.jobPool.retryJob(w.job) //requeue the job
 			return
 		}
 	}
 
 	//calling the handler
-	if err = w.handler(w.jobPool.ctx, wj.value...); err == nil {
+	if err = w.handler(w.jobPool.ctx, w.job.value...); err == nil {
 		w.jobPool.counterPool <- 1 //success
 	} else {
-		w.appendError(wj, err)     //appending error in worker job
-		w.log(wj.value, err)       //logging the error
-		w.retry(wj, err)           //adding job again to retry if possible
+		w.appendError(err)         //appending error in worker job
+		w.log(err)                 //logging the error
+		w.retry(err)               //adding job again to retry if possible
 		w.jobPool.counterPool <- 0 //error
 
 	}
@@ -70,34 +71,35 @@ func (w *Worker) processJob(wj *WorkerJob) {
 
 //appendError will addend error in worker job
 //and enqueue in error pool if enabled
-func (w *Worker) appendError(wj *WorkerJob, err error) {
-	wj.err = append(wj.err, err)
+func (w *Worker) appendError(err error) {
+	w.job.err = append(w.job.err, err)
 	if w.jobPool.ePoolEnable {
-		go func() { w.jobPool.ePool <- wj }()
+		go func() { w.jobPool.ePool <- w.job }()
 	}
 }
 
-func (w *Worker) log(value []interface{}, err error) {
+func (w *Worker) log(err error) {
 	if w.jobPool.logger != nil { //if logger is set
-		w.jobPool.logger.Print(w.jobPool, value, err)
+		w.jobPool.logger.Print(w.jobPool, w.job.value, err)
 	} else if w.jobPool.consoleLog {
 		d := color.New(color.FgHiRed)
-		d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, value)
+		d.Printf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n",
+			w.jobPool.Tag, err, w.job.value)
 	} else {
 		log.Println(err)
 	}
 }
 
 //retry will retry job
-func (w *Worker) retry(wj *WorkerJob, err error) {
-	if wj.retry < w.jobPool.maxRetry {
-		wj.retry++
+func (w *Worker) retry(err error) {
+	if w.job.retry < w.jobPool.maxRetry {
+		w.job.retry++
 		//retrying exponentially
-		dur := int(math.Pow(w.jobPool.exponent, float64(wj.retry)))
-		wj.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
+		dur := int(math.Pow(w.jobPool.exponent, float64(w.job.retry)))
+		w.job.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
 
-		log.Printf("Retrying after: %v ms Job: %v\n", dur, wj.value)
+		log.Printf("Retrying after: %v ms Job: %v\n", dur, w.job.value)
 		w.jobPool.counterPool <- 2 //retry
-		w.jobPool.retryJob(wj)
+		w.jobPool.retryJob(w.job)
 	}
 }
