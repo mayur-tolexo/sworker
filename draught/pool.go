@@ -92,7 +92,7 @@ func (p *Pool) startCount() {
 			case 3:
 				p.totalCount++
 			}
-			if p.profiler != 0 { //if profiler is enabled
+			if p.profiler != 0 { //if batch profiler is enabled
 				p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
 			}
 			if p.ticker != nil { //if time profiler is enabled
