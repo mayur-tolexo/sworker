@@ -57,10 +57,15 @@ func (p *Pool) SetConsoleLog(enable bool) {
 	p.consoleLog = enable
 }
 
-//SetProfiler will set profiler
+//SetBatchProfiler will set profiler by job processed batch
 //will fill print/log the job done in given batch size
-func (p *Pool) SetProfiler(batchSize int) {
+func (p *Pool) SetBatchProfiler(batchSize int) {
 	p.profiler = batchSize
+}
+
+//SetTimeProfiler will set profiler by time
+func (p *Pool) SetTimeProfiler(dur time.Duration) {
+	p.ticker = time.NewTicker(dur)
 }
 
 //GetErrorPool will return error pool
@@ -87,8 +92,15 @@ func (p *Pool) startCount() {
 			case 3:
 				p.totalCount++
 			}
-			if p.profiler != 0 {
+			if p.profiler != 0 { //if profiler is enabled
 				p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+			}
+			if p.ticker != nil { //if time profiler is enabled
+				select {
+				case <-p.ticker.C:
+					p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+				default:
+				}
 			}
 		}
 	}()
@@ -102,14 +114,17 @@ func (p *Pool) getProfilerMsg(total, success, errorCount, retry int) string {
 
 func (p *Pool) profile(total, success, errorCount, retry int) {
 	processed := success + errorCount
-	if processed != p.lastProfile && (processed)%p.profiler == 0 {
-		p.lastProfile = processed
-		msg := p.getProfilerMsg(total, success, errorCount, retry)
-		if p.consoleLog {
-			d := color.New(color.FgHiBlue, color.Bold)
-			d.Print(msg)
-		} else {
-			log.Print(msg)
+	if processed != p.lastProfile {
+		if (p.profiler != 0 && processed%p.profiler == 0) || p.ticker != nil {
+
+			p.lastProfile = processed
+			msg := p.getProfilerMsg(total, success, errorCount, retry)
+			if p.consoleLog {
+				d := color.New(color.FgHiBlue, color.Bold)
+				d.Print(msg)
+			} else {
+				log.Print(msg)
+			}
 		}
 	}
 }

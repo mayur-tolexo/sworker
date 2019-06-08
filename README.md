@@ -32,7 +32,8 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Add Worker](#add-worker) _(Thread safe)_
 - [Set Tag](#set-tag)
 - [Profiler](#profiler) _(To print the current pool status after every specified interval)_
-- [Job process time limit](#) _(Beyond which it will log pool current status)_
+	- [Batch Profiler](#batch-profiler)
+	- [Time Profiler](#time-profiler)
 - [Console log](#console-log)
 
 ### Example 1
@@ -70,7 +71,7 @@ func main() {
 	n := 10                          //no of jobs
 	pool := draught.NewSimplePool(n) //new job pool created
 	pool.SetTag("PRINTER")           //added tag to the pool
-	pool.SetProfiler(5)              //added profiler batch size
+	pool.SetBatchProfiler(5)              //added profiler batch size
 	pool.SetConsoleLog(true)         //enable console log
 	pool.AddWorker(2, handler, true) //adding 2 workers
 
@@ -191,9 +192,14 @@ You can set tag to a pool to identify its log.
 ```
 
 ### Profiler
+- batch profiler
+- time profiler
 ```
-pool.SetProfiler(1000)
-To get the status of processed jobs after specified amount of work done.
+pool.SetBatchProfiler(1000)
+To log pool status after every specified batch of jobs complition.
+
+pool.SetTimeProfiler(500 * time.Millisecond)
+To log pool status after every specified time.
 ```
 #### Profiler Example 
 ```

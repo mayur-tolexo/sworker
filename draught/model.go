@@ -52,6 +52,7 @@ type counter struct {
 	totalCount   int            //total count
 	counterPool  chan int       //0:error 1:success 2:retry 3:total
 	countWG      sync.WaitGroup //counter wait group
+	ticker       *time.Ticker
 }
 
 //Worker will perform the job
