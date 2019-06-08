@@ -21,7 +21,7 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Logger](#logger)
 - [Error Pool](#error-pool)
 - [Retries](#retries)
-- [Set exponent base by which retry will be delayed](#set-exponent-base-of-retry)
+- [Set retry exponent base](#set-retry-exponent-base)
 - [Complete Pool Stats](#pool-stats)
 	- [Total job count](#total-job-count)
 	- [Successful job count](#successful-job-count)
@@ -32,7 +32,7 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Add Worker](#add-worker) _(Thread safe)_
 - [Set Tag](#set-tag)
 - [Profiler](#profiler) _(To print the current pool status after every specified interval)_
-- Worker job process limit (Beyond which it will log worker current status)
+- Job process time limit _(Beyond which it will log worker current status)_
 - [Console log](#console-log)
 
 ### Example 1
@@ -133,11 +133,11 @@ To set maximum number of retires to be done if error occured while processing th
 Default is 0. Retry won't work if panic occured while processing the job.
 ```
 
-### Set exponent base of retry
+### Set retry exponent base
 ```
 pool.SetRetryExponent(2)
 If error occured then that job will be delayed exponentially.  
-Default exponent base is 10. We can set to accordingly.
+Default exponent base is 10.
 ```
 
 ### Pool Stats
