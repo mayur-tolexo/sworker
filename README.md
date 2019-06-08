@@ -192,12 +192,13 @@ To uniquely identify the pool logs.
 ```
 
 ### Profiler
-- batch profiler
-- time profiler
+##### Batch profiler
 ```
 pool.SetBatchProfiler(1000)
 To log pool status after every specified batch of jobs complition.
-
+```
+##### Time profiler
+```
 pool.SetTimeProfiler(500 * time.Millisecond)
 To log pool status after every specified time.
 ```
