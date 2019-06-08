@@ -36,7 +36,7 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Console log](#console-log)
 
 ### Example 1
-Basic print job using two workers and 100 jobs
+Basic print job using two workers.
 ```
 //print : function which worker will call to execute
 func print(ctx context.Context, value ...interface{}) error {
@@ -44,14 +44,10 @@ func print(ctx context.Context, value ...interface{}) error {
 	return nil
 }
 
-//main function
 func main() {
-	handler := print                 //handler function which the go routine will call
-	n := 100                          //no of jobs
 	pool := draught.NewSimplePool(n) //new job pool created
-	pool.AddWorker(2, handler, true) //adding 2 workers
-
-	for i := 0; i < n; i++ {
+	pool.AddWorker(2, print, true) //adding 2 workers
+	for i := 0; i < 100; i++ {
 		pool.AddJob(i) //adding jobs
 	}
 	pool.Close() //closed the job pool
