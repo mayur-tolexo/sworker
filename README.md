@@ -50,7 +50,7 @@ func main() {
 	for i := 0; i < 100; i++ {
 		pool.AddJob(i) //adding jobs
 	}
-	pool.Close() //closed the job pool
+	pool.Close() //closeing the job pool
 }
 ```
 
@@ -77,7 +77,7 @@ func main() {
 	for i := 0; i < n; i++ {
 		pool.AddJob(i) //adding jobs
 	}
-	pool.Close() //closed the job pool
+	pool.Close() //closeing the job pool
 	pool.Stats() //pool stats
 }
 ```
