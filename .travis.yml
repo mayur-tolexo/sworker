@@ -30,6 +30,8 @@ notifications:
 # build and immediately stop. It's sorta like having set -e enabled in bash.
 # Make sure golangci-lint is vendored.
 before_script:
+  - go get github.com/tools/godep
+  - go dep restore
   - go install github.com/mayur-tolexo/sworker/draught
 
 # script always runs to completion (set +e). If we have linter issues AND a
