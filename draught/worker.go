@@ -65,7 +65,6 @@ func (w *Worker) processJob() {
 		w.log(err)                 //logging the error
 		w.retry(err)               //adding job again to retry if possible
 		w.jobPool.counterPool <- 0 //error
-
 	}
 }
 
