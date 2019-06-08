@@ -1,36 +1,40 @@
+# use the latest ubuntu environment (18.04) available on travis
+dist: xenial
+
 language: go
 
-matrix:
-  fast_finish: true
-  include:
-  - go: 1.8.x
-  - go: 1.9.x
-  - go: 1.10.x
-  - go: 1.11.x
-    env: GO111MODULE=on
-  - go: 1.12.x
-    env: GO111MODULE=on
-  - go: master
-    env: GO111MODULE=on
+# Force-enable Go modules. Also force go to use the code in vendor/
+# These will both be unnecessary when Go 1.13 lands.
+env:
+  - GO111MODULE=on
+  - GOFLAGS='-mod vendor'
 
+# You don't need to test on very old versions of the Go compiler. It's the user's
+# responsibility to keep their compiler up to date.
+go:
+  - 1.10.x
+
+# Only clone the most recent commit.
 git:
-  depth: 10
+  depth: 1
 
-before_install:
-  - if [[ "${GO111MODULE}" = "on" ]]; then mkdir "${HOME}/go"; export GOPATH="${HOME}/go"; fi
+# Skip the install step. Don't `go get` dependencies. Only build with the code
+# in vendor/
+install: true
 
-install:
-  - if [[ "${GO111MODULE}" = "on" ]]; then go mod download; else make install; fi
-  - if [[ "${GO111MODULE}" = "on" ]]; then export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"; fi
-  - if [[ "${GO111MODULE}" = "on" ]]; then make tools; fi
+# Don't email me the results of the test runs.
+notifications:
+  email: false
 
-go_import_path: github.com/mayur-tolexo/sworker/draught
+# Anything in before_script that returns a nonzero exit code will flunk the
+# build and immediately stop. It's sorta like having set -e enabled in bash.
+# Make sure golangci-lint is vendored.
+before_script:
+  - go install github.com/mayur-tolexo/sworker/draught
 
+# script always runs to completion (set +e). If we have linter issues AND a
+# failing test, we want to see both. Configure golangci-lint with a
+# .golangci.yml file at the top level of your repo.
 script:
-  - make vet
-  - make fmt-check
-  - make misspell-check
-  - make test
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - golangci-lint run       # run a bunch of code checkers/linters in parallel
+  - go test -v -race ./...  # Run all the tests with the race detector enabled
