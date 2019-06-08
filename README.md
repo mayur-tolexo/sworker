@@ -188,7 +188,7 @@ pool.AddWorker(2, handler, true)
 ### Set tag
 ```
 pool.SetTag("PRINTER")
-You can set tag to a pool to identify its log.
+To uniquely identify the pool logs. 
 ```
 
 ### Profiler
