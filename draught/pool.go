@@ -188,13 +188,17 @@ func (p *Pool) Close() {
 	p.cancel()           //cancel all worker (go routines)
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
-	if p.ePoolEnable {   //if error pool is enable
+
+	if p.ePoolEnable { //if error pool is enable
 		p.ePoolEnable = false //disabling flag
 		close(p.ePool)        //closing the error pool
 	}
-	if p.ticker != nil {
-		p.ticker.Stop()
+
+	if p.ticker != nil { //if time profiler enabled
+		p.ticker = nil  //disabling time profiler
+		p.ticker.Stop() //stoping ticker
 	}
+
 	if p.consoleLog {
 		d := color.New(color.FgGreen, color.Bold)
 		if p.lastProfile != (p.successCount + p.errCount) {
