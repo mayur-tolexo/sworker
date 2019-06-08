@@ -92,10 +92,12 @@ func (p *Pool) startCount() {
 			case 3:
 				p.totalCount++
 			}
-			if p.profiler != 0 { //if batch profiler is enabled
+			//if batch profiler is enabled
+			if p.profiler != 0 {
 				p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
 			}
-			if p.ticker != nil { //if time profiler is enabled
+			//if time profiler is enabled
+			if p.ticker != nil {
 				select {
 				case _, open := <-p.ticker.C:
 					if open {
