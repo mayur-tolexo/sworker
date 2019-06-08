@@ -28,10 +28,10 @@ go get github.com/mayur-tolexo/sworker/draught
 	- [Failure job count](#failure-job-count)
 	- [Retry count](#retry-count)
 	- [Worker count](#worker-count)
-- [Add Job](#add-job) (Thread safe)
-- [Add Worker](#add-worker) (Thread safe)
+- [Add Job](#add-job) _(Thread safe)_
+- [Add Worker](#add-worker) _(Thread safe)_
 - [Set Tag](#set-tag)
-- [Profiler](#profiler) (To print the current pool status after every specified interval)
+- [Profiler](#profiler) _(To print the current pool status after every specified interval)_
 - Worker job process limit (Beyond which it will log worker current status)
 - [Console log](#console-log)
 
