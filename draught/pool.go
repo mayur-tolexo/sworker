@@ -103,7 +103,7 @@ func (p *Pool) startCount() {
 					if open {
 						p.profile(p.totalCount, p.successCount, p.errCount, p.retryCount)
 					} else {
-						p.ticker.Stop()
+						p.ticker = nil
 					}
 				default:
 				}
