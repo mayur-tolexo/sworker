@@ -200,7 +200,9 @@ To log pool status after every specified batch of jobs complition.
 ##### Time profiler
 ```
 pool.SetTimeProfiler(500 * time.Millisecond)
-To log pool status after every specified time.
+To log pool status after every specified time.  
+If the pool worker got stuck at same process for more than  
+thrice of the profiler time then it will log the worker current status.
 ```
 #### Profiler Example 
 ```

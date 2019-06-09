@@ -162,13 +162,15 @@ func (p *Pool) workerStatus() {
 	}
 
 	for _, w := range p.workerPool {
-		msg = fmt.Sprintf("Value %v Error %v\n",
-			w.job.GetValue(), w.job.GetError())
-		if p.consoleLog {
-			d = color.New(color.FgBlack)
-			d.Print(msg)
-		} else {
-			log.Print(msg)
+		if w.working {
+			msg = fmt.Sprintf("Value %v Error %v\n",
+				w.job.GetValue(), w.job.GetError())
+			if p.consoleLog {
+				d = color.New(color.FgBlack)
+				d.Print(msg)
+			} else {
+				log.Print(msg)
+			}
 		}
 	}
 }
