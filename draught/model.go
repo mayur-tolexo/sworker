@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//Logger will be called if error occured
+//Logger will be called if error occured.
 //@params: pool, job value, error
 type Logger interface {
 	Print(*Pool, []interface{}, error)
