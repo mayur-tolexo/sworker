@@ -24,8 +24,8 @@ go get github.com/mayur-tolexo/sworker/draught
 - [Set retry exponent base](#set-retry-exponent-base)
 - [Complete Pool Stats](#pool-stats)
 	- [Total job count](#total-job-count)
-	- [Successful job count](#successful-job-count)
-	- [Failure job count](#failure-job-count)
+	- [Success count](#success-count)
+	- [Error count](#error-count)
 	- [Retry count](#retry-count)
 	- [Worker count](#worker-count)
 - [Add Job](#add-job) _(Thread safe)_
@@ -151,12 +151,12 @@ Pool's complete status.
 pool.TotalCount()
 Total job processed by the pool workers.
 ```
-#### Successful job count
+#### Success count
 ```
 pool.SuccessCount()
 Successfully processed jobs count
 ```
-#### Failure job count
+#### Error count
 ```
 pool.ErrorCount()
 Error count while processing job
