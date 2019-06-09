@@ -38,10 +38,13 @@ type pError struct {
 
 //flags contains pool flags
 type flags struct {
-	sTime       time.Time //pool start time
-	consoleLog  bool      //this flag will enable console logging
-	profiler    int       //if this flag is set then profiler will be activated
-	lastProfile int       //contains last profiler count
+	sTime       time.Time    //pool start time
+	consoleLog  bool         //this flag will enable console logging
+	profiler    int          //if this flag is set then profiler will be activated
+	lastProfile int          //contains last profiler count
+	ticker      *time.Ticker //time profiler ticker
+	tickerCount int          //time profiler count
+	tickerLimit int          //time profiler count limit
 }
 
 //counter of the pool
@@ -53,7 +56,6 @@ type counter struct {
 	totalCount   int            //total count
 	counterPool  chan int       //0:error 1:success 2:retry 3:total
 	countWG      sync.WaitGroup //counter wait group
-	ticker       *time.Ticker
 }
 
 //Worker will perform the job

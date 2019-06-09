@@ -22,6 +22,7 @@ func NewPool(size int, tag string, logger Logger) *Pool {
 		exponent:   10.0,
 	}
 	p.counterPool = make(chan int, size/2) //as their is 1/2 probability of success or failure
+	p.tickerLimit = 3
 	p.startCount()
 	return &p
 }
@@ -114,6 +115,9 @@ func (p *Pool) logProfile(total, success, errorCount, retry int) {
 		select {
 		case _, open := <-p.ticker.C:
 			if open {
+				if p.tickerCount == p.tickerLimit {
+					p.workerStatus()
+				}
 				p.profile(total, success, errorCount, retry, true)
 			} else {
 				p.ticker = nil
@@ -127,6 +131,7 @@ func (p *Pool) profile(total, success, errorCount, retry int, timeProfile bool) 
 	processed := success + errorCount
 	if processed != p.lastProfile {
 		p.lastProfile = processed
+		p.tickerCount = 0
 		msg := p.getProfilerMsg(total, success, errorCount, retry)
 		if p.consoleLog {
 			var d *color.Color
@@ -134,6 +139,33 @@ func (p *Pool) profile(total, success, errorCount, retry int, timeProfile bool) 
 			if timeProfile {
 				d = color.New(color.FgBlack, color.Bold)
 			}
+			d.Print(msg)
+		} else {
+			log.Print(msg)
+		}
+	} else if timeProfile {
+		p.tickerCount++
+	}
+}
+
+//workerStatus will print worker current status
+func (p *Pool) workerStatus() {
+	p.mtx.RLock()
+	defer p.mtx.RUnlock()
+
+	d := color.New(color.FgBlack, color.Bold)
+	msg := fmt.Sprintf("---%v WORKER STATUS---\n", p.getTag())
+	if p.consoleLog {
+		d.Print(msg)
+	} else {
+		log.Print(msg)
+	}
+
+	for _, w := range p.workerPool {
+		msg = fmt.Sprintf("Value %v Error %v\n",
+			w.job.GetValue(), w.job.GetError())
+		if p.consoleLog {
+			d = color.New(color.FgBlack)
 			d.Print(msg)
 		} else {
 			log.Print(msg)
