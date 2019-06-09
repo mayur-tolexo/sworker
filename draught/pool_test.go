@@ -18,7 +18,7 @@ func TestPool(t *testing.T) {
 	pool := NewPool(2, "", nil)
 	pool.AddWorker(2, handler, true)
 	for i := 0; i < 20; i++ {
-		pool.AddJob(i)
+		go pool.AddJob(i)
 	}
 	pool.Close()
 	assert := assert.New(t)

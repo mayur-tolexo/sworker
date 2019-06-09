@@ -175,14 +175,15 @@ No of Worker added on pool
 ### Add job
 ```
 for i := 1; i <= n; i++ {
-	go func(){pool.AddJob(i)}()
+	go pool.AddJob(i)
 }
-You can add job in go routines as well.
+You can add job in go routines as it is thread safe.
 ```
 
 ### Add worker
 ```
 pool.AddWorker(2, handler, true)
+You can add worker in go routines as well.
 ```
 
 ### Set tag
