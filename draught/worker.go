@@ -41,9 +41,8 @@ func (w *Worker) processJob() {
 		w.working = false
 		if rec := recover(); rec != nil {
 			err = fmt.Errorf("Panic: %v", rec)
-			w.appendError(err)         //appending error in worker job
-			w.log(err)                 //logged the panic
-			w.jobPool.counterPool <- 0 //error
+			w.appendError(err) //appending error in worker job
+			w.log(err)         //logged the panic
 		}
 	}()
 
@@ -61,19 +60,19 @@ func (w *Worker) processJob() {
 	if err = w.handler(w.jobPool.ctx, w.job.value...); err == nil {
 		w.jobPool.counterPool <- 1 //success
 	} else {
-		w.appendError(err)         //appending error in worker job
-		w.log(err)                 //logging the error
-		w.retry(err)               //adding job again to retry if possible
-		w.jobPool.counterPool <- 0 //error
+		w.appendError(err) //appending error in worker job
+		w.log(err)         //logging the error
+		w.retry(err)       //adding job again to retry if possible
 	}
 }
 
 //appendError will addend error in worker job
 //and enqueue in error pool if enabled
 func (w *Worker) appendError(err error) {
+	w.jobPool.counterPool <- 0 //error
 	w.job.err = append(w.job.err, err)
 	if w.jobPool.ePoolEnable {
-		go func() { w.jobPool.ePool <- w.job }()
+		w.jobPool.ePool <- w.job
 	}
 }
 

@@ -2,6 +2,7 @@ package draught
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -42,8 +43,28 @@ func panicPrint(ctx context.Context, value ...interface{}) (err error) {
 func TestLogger(t *testing.T) {
 	pool := NewPool(1, "", logger{t})
 	pool.AddWorker(2, panicPrint, true)
-	for i := 0; i < 20; i++ {
-		pool.AddJob(i)
-	}
+	pool.AddJob(1)
 	pool.Close()
+}
+
+type logger2 struct {
+}
+
+func (l logger2) Print(pool *Pool, value []interface{}, err error) {
+}
+
+func errorPrint(ctx context.Context, value ...interface{}) (err error) {
+	return fmt.Errorf("Error Print")
+}
+
+func TestErrorPool(t *testing.T) {
+	pool := NewPool(1, "", logger2{})
+	pool.AddWorker(1, errorPrint, true)
+	pool.AddJob(1)
+	ep := pool.GetErrorPool()
+	pool.Close()
+	wj := <-ep
+	assert := assert.New(t)
+	assert.NotNil(wj)
+	assert.EqualError(wj.GetError()[0], "Error Print")
 }
