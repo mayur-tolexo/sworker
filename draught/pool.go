@@ -203,8 +203,8 @@ func (p *Pool) Close() {
 	}
 
 	if p.ticker != nil { //if time profiler enabled
-		p.ticker = nil  //disabling time profiler
 		p.ticker.Stop() //stoping ticker
+		p.ticker = nil  //disabling time profiler
 	}
 
 	if p.consoleLog {
