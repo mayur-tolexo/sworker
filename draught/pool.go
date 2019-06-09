@@ -254,7 +254,7 @@ func (p *Pool) Stats() {
 	msg := fmt.Sprintf("\n%v: Woker %d Jobs: Total %d Success %d Error %d Retry %d\n",
 		p.getTag(), p.wCount, p.totalCount, p.successCount, p.errCount, p.retryCount)
 	if p.consoleLog {
-		d := color.New(color.FgHiMagenta, color.Bold)
+		d := color.New(color.FgBlack, color.Bold)
 		d.Print(msg)
 	} else {
 		log.Print(msg)
