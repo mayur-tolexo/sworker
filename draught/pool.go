@@ -104,16 +104,17 @@ func (p *Pool) getProfilerMsg(total, success, errorCount, retry int) string {
 }
 
 func (p *Pool) logProfile(total, success, errorCount, retry int) {
+	processed := success + errorCount
 	//if batch profiler is enabled
-	if p.profiler != 0 {
-		p.profile(total, success, errorCount, retry)
+	if p.profiler != 0 && processed%p.profiler == 0 {
+		p.profile(total, success, errorCount, retry, false)
 	}
 	//if time profiler is enabled
 	if p.ticker != nil {
 		select {
 		case _, open := <-p.ticker.C:
 			if open {
-				p.profile(total, success, errorCount, retry)
+				p.profile(total, success, errorCount, retry, true)
 			} else {
 				p.ticker = nil
 			}
@@ -122,19 +123,20 @@ func (p *Pool) logProfile(total, success, errorCount, retry int) {
 	}
 }
 
-func (p *Pool) profile(total, success, errorCount, retry int) {
+func (p *Pool) profile(total, success, errorCount, retry int, timeProfile bool) {
 	processed := success + errorCount
 	if processed != p.lastProfile {
-		if (p.profiler != 0 && processed%p.profiler == 0) || p.ticker != nil {
-
-			p.lastProfile = processed
-			msg := p.getProfilerMsg(total, success, errorCount, retry)
-			if p.consoleLog {
-				d := color.New(color.FgHiBlue, color.Bold)
-				d.Print(msg)
-			} else {
-				log.Print(msg)
+		p.lastProfile = processed
+		msg := p.getProfilerMsg(total, success, errorCount, retry)
+		if p.consoleLog {
+			var d *color.Color
+			d = color.New(color.FgHiBlue, color.Bold)
+			if timeProfile {
+				d = color.New(color.FgBlack, color.Bold)
 			}
+			d.Print(msg)
+		} else {
+			log.Print(msg)
 		}
 	}
 }
