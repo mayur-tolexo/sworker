@@ -63,8 +63,9 @@ func TestErrorPool(t *testing.T) {
 	pool.AddJob(1)
 	ep := pool.GetErrorPool()
 	pool.Close()
-	wj := <-ep
-	assert := assert.New(t)
-	assert.NotNil(wj)
-	assert.EqualError(wj.GetError()[0], "Error Print")
+	if wj, open := <-ep; open {
+		assert := assert.New(t)
+		assert.NotNil(wj)
+		assert.EqualError(wj.GetError()[0], "Error Print")
+	}
 }
