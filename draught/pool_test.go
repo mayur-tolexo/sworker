@@ -69,3 +69,14 @@ func TestErrorPool(t *testing.T) {
 		assert.EqualError(wj.GetError()[0], "Error Print")
 	}
 }
+
+func TestErrorCount(t *testing.T) {
+	pool := NewPool(1, "", logger2{})
+	pool.AddWorker(1, errorPrint, true)
+	for i := 0; i < 10; i++ {
+		pool.AddJob(i)
+	}
+	pool.Close()
+	assert := assert.New(t)
+	assert.Equal(10, pool.ErrorCount())
+}
