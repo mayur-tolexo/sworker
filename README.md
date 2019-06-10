@@ -14,7 +14,8 @@ go get github.com/mayur-tolexo/sworker/draught
 ```
 
 ### Benchmark
-![Screenshot 2019-06-10 at 11 38 01 PM](https://user-images.githubusercontent.com/20511920/59217199-076a0c80-8bdb-11e9-9780-f5ce92025336.png)
+sworker Draught have constant performance for the all number of CPUs.
+![Screenshot 2019-06-11 at 12 41 43 AM](https://user-images.githubusercontent.com/20511920/59220202-07b9d600-8be2-11e9-8571-6575fbde3610.png)
 
 ### Features
 - [Recovery](#recovery)
