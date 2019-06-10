@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-//Logger will be called if error occured
+//Logger will be called if error occurred
 type Logger interface {
 	Print(jp *JobPool, job interface{}, err interface{})
 }

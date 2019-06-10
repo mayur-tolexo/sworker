@@ -36,7 +36,9 @@ func (l logger) Print(pool *Pool, value []interface{}, err error) {
 }
 
 func panicPrint(ctx context.Context, value ...interface{}) (err error) {
-	panic("Panic Print")
+	if true {
+		panic("Panic Print")
+	}
 	return nil
 }
 

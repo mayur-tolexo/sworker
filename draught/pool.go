@@ -70,7 +70,7 @@ func (p *Pool) SetTimeProfiler(dur time.Duration) {
 }
 
 //GetErrorPool will return error pool
-//if any error occured then worker will push that error on error pool
+//if any error occurred then worker will push that error on error pool
 func (p *Pool) GetErrorPool() <-chan *WorkerJob {
 	p.ePool = make(chan *WorkerJob, cap(p.pool))
 	p.ePoolEnable = true
