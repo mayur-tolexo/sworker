@@ -211,8 +211,8 @@ func (p *Pool) Start() {
 func (p *Pool) AddJob(value ...interface{}) {
 	if p.closed == false {
 		p.wg.Add(1)
-		p.pool <- &WorkerJob{value: value}
 		p.counterPool <- 3
+		p.pool <- &WorkerJob{value: value}
 	}
 }
 
@@ -228,7 +228,7 @@ func (p *Pool) retryJob(job *WorkerJob) {
 func (p *Pool) Close() {
 	p.wg.Wait()          //waiting for all job to be done
 	p.closed = true      //marking pool as closed
-	p.cancel()           //cancel all worker (go routines)
+	close(p.pool)        //closing pool after all work is done
 	close(p.counterPool) //close counter pool
 	p.countWG.Wait()     //waiting for counter to complete the count
 

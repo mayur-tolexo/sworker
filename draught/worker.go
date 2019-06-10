@@ -16,19 +16,8 @@ func (w *Worker) start() {
 
 func (w *Worker) run() {
 	go func() {
-		for {
-			select {
-			case <-w.jobPool.ctx.Done():
-				return
-			case job, open := <-w.jobPool.pool:
-				if open == false {
-					return
-				}
-				w.job = job
-				w.working = true
-				w.processJob()
-			default: //non blocking
-			}
+		for w.job = range w.jobPool.pool {
+			w.processJob()
 		}
 	}()
 }
@@ -45,6 +34,7 @@ func (w *Worker) processJob() {
 			w.log(err)         //logged the panic
 		}
 	}()
+	w.working = true
 
 	if w.job.timer != nil { //if timer is set then check if timeout is done or not
 		select {
