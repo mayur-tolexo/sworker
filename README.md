@@ -14,7 +14,7 @@ go get github.com/mayur-tolexo/sworker/draught
 ```
 
 ### Benchmark
-![Screenshot 2019-06-10 at 11 03 16 PM](https://user-images.githubusercontent.com/20511920/59214117-07b2d980-8bd4-11e9-86df-cd509a72ef80.png)
+![Screenshot 2019-06-10 at 11 38 01 PM](https://user-images.githubusercontent.com/20511920/59217199-076a0c80-8bdb-11e9-9780-f5ce92025336.png)
 
 ### Features
 - [Recovery](#recovery)
