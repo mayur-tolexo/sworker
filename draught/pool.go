@@ -264,6 +264,12 @@ func (p *Pool) Stats() {
 	}
 }
 
+//GetStats will return pool stats
+func (p *Pool) GetStats() string {
+	return fmt.Sprintf("\n%v: Woker %d Jobs: Total %d Success %d Error %d Retry %d\n",
+		p.getTag(), p.wCount, p.totalCount, p.successCount, p.errCount, p.retryCount)
+}
+
 //SuccessCount will return success count
 func (p *Pool) SuccessCount() int {
 	return p.successCount
