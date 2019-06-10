@@ -116,6 +116,7 @@ func (p *Pool) logProfile(total, success, errorCount, retry int) {
 		case _, open := <-p.ticker.C:
 			if open {
 				if p.tickerCount == p.tickerLimit {
+					p.tickerCount = 0
 					p.workerStatus()
 				}
 				p.profile(total, success, errorCount, retry, true)
