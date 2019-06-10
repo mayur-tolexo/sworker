@@ -46,7 +46,7 @@ func (jobPool *JobPool) Close() {
 }
 
 //KClose the job pool and wait until all the jobs are completed
-//after complition will kill all routines
+//after completion will kill all routines
 func (jobPool *JobPool) KClose() {
 	jobPool.wg.Wait()
 	close(jobPool.job)
