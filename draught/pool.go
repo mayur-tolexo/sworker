@@ -211,8 +211,8 @@ func (p *Pool) Start() {
 func (p *Pool) AddJob(value ...interface{}) {
 	if p.closed == false {
 		p.wg.Add(1)
-		p.counterPool <- 3
 		p.pool <- &WorkerJob{value: value}
+		p.counterPool <- 3
 	}
 }
 
