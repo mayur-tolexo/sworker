@@ -24,3 +24,12 @@ func ExampleNewPool() {
 	fmt.Println(pool.GetStats())
 	// Output: Tag: Woker 2 Jobs: Total 1 Success 1 Error 0 Retry 0
 }
+
+func ExampleNewSimplePool() {
+	pool := NewSimplePool(1)
+	pool.AddWorker(2, egPrint, true)
+	pool.AddJob(1)
+	pool.Close()
+	fmt.Println(pool.GetStats())
+	// Output: Pool: Woker 2 Jobs: Total 1 Success 1 Error 0 Retry 0
+}
