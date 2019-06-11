@@ -69,6 +69,17 @@ func (p *Pool) SetTimeProfiler(dur time.Duration) {
 	p.ticker = time.NewTicker(dur)
 }
 
+//DisableCounter will disable pool counter
+func (p *Pool) DisableCounter() {
+	p.disableCounter = true
+}
+
+//EnableCounter will enable pool counter
+func (p *Pool) EnableCounter() {
+	p.disableCounter = false
+	p.startCount()
+}
+
 //GetErrorPool will return error pool
 //if any error occurred then worker will push that error on error pool
 func (p *Pool) GetErrorPool() <-chan *WorkerJob {
@@ -82,6 +93,9 @@ func (p *Pool) startCount() {
 	p.countWG.Add(1) //one job added for counter to complete
 	go func() {
 		defer p.countWG.Done()
+		if p.disableCounter {
+			return
+		}
 		for val := range p.counterPool {
 			switch val {
 			case 0:
@@ -94,6 +108,9 @@ func (p *Pool) startCount() {
 				p.totalCount++
 			}
 			p.logProfile(p.totalCount, p.successCount, p.errCount, p.retryCount)
+			if p.disableCounter {
+				return
+			}
 		}
 	}()
 }
@@ -211,7 +228,9 @@ func (p *Pool) Start() {
 func (p *Pool) AddJob(value ...interface{}) {
 	if p.closed == false {
 		p.wg.Add(1)
-		p.counterPool <- 3
+		if p.disableCounter == false {
+			p.counterPool <- 3
+		}
 		p.pool <- &WorkerJob{value: value}
 	}
 }

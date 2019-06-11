@@ -13,8 +13,9 @@ func print(ctx context.Context, value ...interface{}) (err error) {
 	return nil
 }
 
-func BenchmarkDraught(b *testing.B) {
+func BenchmarkSworker(b *testing.B) {
 	for i := 1; i <= runtime.NumCPU()+1; i++ {
+		// i := runtime.NumCPU()
 		b.Run(fmt.Sprintf("%v-Worker", i), func(b *testing.B) {
 			runDraughtBenchmark(b, i)
 		})
@@ -24,6 +25,7 @@ func BenchmarkDraught(b *testing.B) {
 func runDraughtBenchmark(b *testing.B, wCount int) {
 	handler := print
 	pool := draught.NewPool(b.N, "", nil)
+	pool.DisableCounter()
 	pool.AddWorker(wCount, handler, true)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
