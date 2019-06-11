@@ -48,9 +48,7 @@ func (w *Worker) processJob() {
 
 	//calling the handler
 	if err = w.handler(w.jobPool.ctx, w.job.value...); err == nil {
-		if w.jobPool.disableCounter == false {
-			w.jobPool.counterPool <- 1 //success
-		}
+		w.jobPool.counterPool <- 1 //success
 	} else {
 		w.appendError(err) //appending error in worker job
 		w.log(err)         //logging the error
@@ -61,9 +59,7 @@ func (w *Worker) processJob() {
 //appendError will addend error in worker job
 //and enqueue in error pool if enabled
 func (w *Worker) appendError(err error) {
-	if w.jobPool.disableCounter == false {
-		w.jobPool.counterPool <- 0 //error
-	}
+	w.jobPool.counterPool <- 0 //error
 	w.job.err = append(w.job.err, err)
 	if w.jobPool.ePoolEnable {
 		w.jobPool.ePool <- w.job
@@ -95,9 +91,7 @@ func (w *Worker) retry(err error) {
 		w.job.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
 
 		log.Printf("Retrying after: %v ms Job: %v\n", dur, w.job.value)
-		if w.jobPool.disableCounter == false {
-			w.jobPool.counterPool <- 2 //retry
-		}
+		w.jobPool.counterPool <- 2 //retry
 		w.jobPool.retryJob(w.job)
 	}
 }

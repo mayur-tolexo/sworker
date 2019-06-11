@@ -25,7 +25,6 @@ func BenchmarkSworker(b *testing.B) {
 func runDraughtBenchmark(b *testing.B, wCount int) {
 	handler := print
 	pool := draught.NewPool(b.N, "", nil)
-	pool.DisableCounter()
 	pool.AddWorker(wCount, handler, true)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {

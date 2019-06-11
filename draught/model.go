@@ -49,14 +49,13 @@ type flags struct {
 
 //counter of the pool
 type counter struct {
-	disableCounter bool
-	errCount       int            //error count
-	successCount   int            //success count
-	retryCount     int            //retry count
-	wCount         int            //worker count
-	totalCount     int            //total count
-	counterPool    chan int       //0:error 1:success 2:retry 3:total
-	countWG        sync.WaitGroup //counter wait group
+	errCount     int            //error count
+	successCount int            //success count
+	retryCount   int            //retry count
+	wCount       int            //worker count
+	totalCount   int            //total count
+	counterPool  chan int       //0:error 1:success 2:retry 3:total
+	countWG      sync.WaitGroup //counter wait group
 }
 
 //Worker will perform the job
