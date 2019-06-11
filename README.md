@@ -14,7 +14,7 @@ go get github.com/mayur-tolexo/sworker/draught
 ```
 
 ### Benchmark
-sworker draught is fast enough as compared to the other worker pool.
+sworker draught is fast enough as compared to the other worker pools available.
 ![Screenshot 2019-06-11 at 12 41 43 AM](https://user-images.githubusercontent.com/20511920/59220202-07b9d600-8be2-11e9-8571-6575fbde3610.png)
 
 ### Features
