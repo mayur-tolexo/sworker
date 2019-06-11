@@ -15,9 +15,8 @@ func print(ctx context.Context, value ...interface{}) (err error) {
 
 func BenchmarkDraught(b *testing.B) {
 	for i := 1; i <= runtime.NumCPU()+1; i++ {
-		n := runtime.NumCPU()
 		b.Run(fmt.Sprintf("%v-Worker", i), func(b *testing.B) {
-			runDraughtBenchmark(b, n)
+			runDraughtBenchmark(b, i)
 		})
 	}
 }
