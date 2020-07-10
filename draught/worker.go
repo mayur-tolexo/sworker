@@ -2,11 +2,11 @@ package draught
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/sirupsen/logrus"
 )
 
 //start will start the worker
@@ -77,7 +77,7 @@ func (w *Worker) log(err error) {
 			d := color.New(color.FgRed)
 			d.Print(msg)
 		} else {
-			log.Println(msg)
+			logrus.Println(msg)
 		}
 	}
 }
@@ -90,7 +90,7 @@ func (w *Worker) retry(err error) {
 		dur := int(math.Pow(w.jobPool.exponent, float64(w.job.retry)))
 		w.job.timer = time.NewTimer(time.Duration(dur) * time.Millisecond)
 
-		log.Printf("Retrying after: %v ms Job: %v\n", dur, w.job.value)
+		logrus.Printf("Retrying after: %v ms Job: %v\n", dur, w.job.value)
 		w.jobPool.counterPool <- 2 //retry
 		w.jobPool.retryJob(w.job)
 	}

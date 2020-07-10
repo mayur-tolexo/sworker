@@ -3,10 +3,10 @@ package draught
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/sirupsen/logrus"
 )
 
 //NewPool will create new pool
@@ -142,7 +142,7 @@ func (p *Pool) profile(total, success, errorCount, retry int, timeProfile bool) 
 			}
 			d.Print(msg)
 		} else {
-			log.Print(msg)
+			logrus.Print(msg)
 		}
 	} else if timeProfile {
 		p.tickerCount++
@@ -159,7 +159,7 @@ func (p *Pool) workerStatus() {
 	if p.consoleLog {
 		d.Print(msg)
 	} else {
-		log.Print(msg)
+		logrus.Print(msg)
 	}
 
 	for _, w := range p.workerPool {
@@ -170,7 +170,7 @@ func (p *Pool) workerStatus() {
 				d = color.New(color.FgBlack)
 				d.Print(msg)
 			} else {
-				log.Print(msg)
+				logrus.Print(msg)
 			}
 		}
 	}
@@ -260,7 +260,7 @@ func (p *Pool) Stats() {
 		d := color.New(color.FgBlack, color.Bold)
 		d.Print(msg)
 	} else {
-		log.Print(msg)
+		logrus.Print(msg)
 	}
 }
 
