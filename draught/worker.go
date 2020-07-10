@@ -17,7 +17,12 @@ func (w *Worker) start() {
 func (w *Worker) run() {
 	go func() {
 		for w.job = range w.jobPool.pool {
-			w.processJob()
+			select {
+			case <-w.quite:
+				return
+			default:
+				w.processJob()
+			}
 		}
 	}()
 }

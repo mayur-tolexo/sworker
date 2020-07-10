@@ -184,6 +184,7 @@ func (p *Pool) AddWorker(n int, handler Handler, start ...bool) {
 		w := &Worker{
 			ID:      i + sTime.Nanosecond(),
 			jobPool: p,
+			quite:   make(chan struct{}),
 			handler: handler,
 		}
 		p.mtx.Lock()
@@ -311,4 +312,11 @@ func (p *Pool) getTag() string {
 		tag = "Pool"
 	}
 	return tag
+}
+
+// CloseGracefully will terminate all worker gracefully
+func (p *Pool) CloseGracefully() {
+	for _, w := range p.workerPool {
+		w.quite <- struct{}{}
+	}
 }
