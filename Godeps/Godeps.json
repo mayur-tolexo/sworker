@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/mayur-tolexo/sworker",
-	"GoVersion": "go1.9",
+	"GoVersion": "go1.13",
 	"GodepVersion": "v80",
 	"Packages": [
 		"./..."
@@ -8,8 +8,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/davecgh/go-spew/spew",
-			"Comment": "v1.1.0-12-g8991bc2",
-			"Rev": "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+			"Comment": "v1.1.1-1-gd8f796a",
+			"Rev": "d8f796af33cc11cb798c1aaeb27a4ebc5099927d"
 		},
 		{
 			"ImportPath": "github.com/fatih/color",
@@ -18,27 +18,45 @@
 		},
 		{
 			"ImportPath": "github.com/mattn/go-colorable",
-			"Comment": "v0.0.9-6-gad5389d",
-			"Rev": "ad5389df28cdac544c99bd7b9161a0b5b6ca9d1b"
+			"Comment": "v0.1.6-5-gf1b5a0e",
+			"Rev": "f1b5a0ed4603826971e6d07195710bbc9ed74df6"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-isatty",
-			"Comment": "v0.0.4-6-g3fb116b",
-			"Rev": "3fb116b820352b7f0c281308a4d6250c22d94e27"
+			"Comment": "v0.0.12-3-gcb30d62",
+			"Rev": "cb30d6282491c185f77d9bec5d25de1bb61a06bc"
 		},
 		{
 			"ImportPath": "github.com/pmezard/go-difflib/difflib",
-			"Comment": "v1.0.0",
-			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
+			"Comment": "v1.0.0-4-g5d4384e",
+			"Rev": "5d4384ee4fb2527b0a1256a821ebfc92f91efefc"
+		},
+		{
+			"ImportPath": "github.com/sirupsen/logrus",
+			"Comment": "v1.5.0-24-g6699a89",
+			"Rev": "6699a89a232f3db797f2e280639854bbc4b89725"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
-			"Comment": "v1.1.4-71-g890a5c3",
-			"Rev": "890a5c3458b43e6104ff5da8dfa139d013d77544"
+			"Comment": "v1.5.1-41-gbb468cc",
+			"Rev": "bb468cc94d35e4c2a709db0e0f5bc54887248c0e"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/internal/unsafeheader",
+			"Rev": "bc7a7d42d5c30f4d0fe808715c002826ce2c624e"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "07c182904dbd53199946ba614a412c61d3c548f5"
+			"Rev": "bc7a7d42d5c30f4d0fe808715c002826ce2c624e"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/windows",
+			"Rev": "bc7a7d42d5c30f4d0fe808715c002826ce2c624e"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Comment": "v2.3.0",
+			"Rev": "0b1645d91e851e735d3e23330303ce81f70adbe3"
 		}
 	]
 }
