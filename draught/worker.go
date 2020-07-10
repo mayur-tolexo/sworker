@@ -20,6 +20,7 @@ func (w *Worker) run() {
 			select {
 			case <-w.quite:
 				logrus.Debug("Closing worker", w.ID)
+				w.quite <- struct{}{}
 				return
 			default:
 				w.processJob()

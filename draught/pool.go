@@ -318,5 +318,6 @@ func (p *Pool) getTag() string {
 func (p *Pool) CloseGracefully() {
 	for _, w := range p.workerPool {
 		w.quite <- struct{}{}
+		<-w.quite
 	}
 }
