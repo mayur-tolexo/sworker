@@ -19,6 +19,7 @@ func (w *Worker) run() {
 		for w.job = range w.jobPool.pool {
 			select {
 			case <-w.quite:
+				logrus.Debug("Closing worker", w.ID)
 				return
 			default:
 				w.processJob()
