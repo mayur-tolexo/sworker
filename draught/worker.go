@@ -3,9 +3,9 @@ package draught
 import (
 	"fmt"
 	"math"
+	"runtime/debug"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/sirupsen/logrus"
 )
 
@@ -36,7 +36,7 @@ func (w *Worker) processJob() {
 	defer func() {
 		w.working = false
 		if rec := recover(); rec != nil {
-			err = fmt.Errorf("Panic: %v", rec)
+			err = fmt.Errorf("Panic: %v Trace: \n %v", rec, string(debug.Stack()))
 			w.appendError(err) //appending error in worker job
 			w.log(err)         //logged the panic
 		}
@@ -77,15 +77,8 @@ func (w *Worker) log(err error) {
 	if w.jobPool.logger != nil { //if logger is set
 		w.jobPool.logger.Print(w.jobPool, w.job.value, err)
 	} else {
-		msg := fmt.Sprintf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n",
-			w.jobPool.Tag, err, w.job.value)
-
-		if w.jobPool.consoleLog {
-			d := color.New(color.FgRed)
-			d.Print(msg)
-		} else {
-			logrus.Println(msg)
-		}
+		msg := fmt.Sprintf("\nERROR IN PROCESSING HANDLER:%v %v\nJOB VALUE: %v\n", w.jobPool.Tag, err, w.job.value)
+		logrus.Error(msg)
 	}
 }
 
